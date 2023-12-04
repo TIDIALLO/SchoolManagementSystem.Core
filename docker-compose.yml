@@ -1,8 +1,8 @@
 version: '3.4'
 
 services:
-  schoolmanagementsystem.core:
-    image: ${DOCKER_REGISTRY-}schoolmanagementsystemcore
+  schoolmanagementsystem.core.api:
+    image: ${DOCKER_REGISTRY-}schoolmanagementsystemcoreapi
     build:
       context: .
       dockerfile: SchoolManagementSystem.Core/Dockerfile
