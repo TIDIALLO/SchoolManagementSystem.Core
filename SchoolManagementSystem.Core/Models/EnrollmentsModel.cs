@@ -1,6 +1,6 @@
 ﻿namespace SchoolManagementSystem.Core.Models
 {
-    public class Enrollment
+    public class EnrollmentsModel
     {
         public Guid EnrollmentId { get; set; }
         public Guid StudentId { get; set; }

@@ -4,10 +4,10 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <DockerPublishLocally>False</DockerPublishLocally>
-    <ProjectGuid>b753232a-6e9a-466d-93b4-963851facc20</ProjectGuid>
+    <ProjectGuid>1e85d25c-bdf0-4c60-a9ea-c0038be083ae</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>schoolmanagementsystem.core</DockerServiceName>
+    <DockerServiceName>schoolmanagementsystem.core.api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

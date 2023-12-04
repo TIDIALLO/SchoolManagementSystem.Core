@@ -2,7 +2,7 @@
 
 namespace SchoolManagementSystem.Core.Models
 {
-    public class Student
+    public class StudentsModel
     {
         public Guid StudentId { get; set; }
         public string FirstName { get; set; }
