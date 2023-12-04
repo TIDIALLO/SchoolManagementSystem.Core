@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  schoolmanagementsystem.core:
+    image: ${DOCKER_REGISTRY-}schoolmanagementsystemcore
+    build:
+      context: .
+      dockerfile: SchoolManagementSystem.Core/Dockerfile
