@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SchoolManagementSystem.DAL;
+using SchoolManagementSystem.Domain.Entities;
+using SchoolManagementSystem.Portal.Shared.Request;
 
 namespace SchoolManagementSystem.Core.Controllers
 {
@@ -7,15 +11,17 @@ namespace SchoolManagementSystem.Core.Controllers
     [ApiController]
     public class StudentsController : ControllerBase
     {
-        public readonly ILogger<StudentsController> _logger;
+        private readonly ILogger<StudentsController> _logger;
+        private readonly ApplicationDbContext _dbcontext;
         public StudentsController(IServiceProvider serviceProvider) 
         {
             _logger = serviceProvider.GetRequiredService<ILogger<StudentsController>>();
+            _dbcontext = serviceProvider.GetRequiredService<ApplicationDbContext>();
         }
 
 
         [HttpGet]
-        [Route("{studentId}/get-student")]
+        [Route("{s  tudentId}/get-student")]
         public async Task<IActionResult> GetStudent(Guid StudentId)
         {
             return Ok("Student Id=##########");
@@ -29,10 +35,25 @@ namespace SchoolManagementSystem.Core.Controllers
         }
 
         [HttpPost]
-        [Route("add-student")]
-        public async Task<IActionResult> PostStudent(Guid StudentId)
+        [Route("save-student")]
+        public async Task<IActionResult> SaveStudent(SaveStudentRequest request)
         {
-            return Ok("Student Id=##########");
+            var entity = new StudentEntity
+            {
+                /* FirstName = "Aly",
+                 LastName = "Diop",
+                 Email = "diop.aly@gmail.com",
+                 DateOfBirth = DateTime.UtcNow,*/
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                DateOfBirth = request.DateOfBirth,
+                Address = request.Address
+            };
+            await _dbcontext.Students.AddAsync(entity);
+            await _dbcontext.SaveChangesAsync();
+
+            return Ok(request);
         }
 
         [HttpPut]

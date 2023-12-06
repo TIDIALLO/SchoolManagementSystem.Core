@@ -5,7 +5,8 @@
       "commandVersion": "1.0",
       "serviceActions": {
         "schoolmanagementsystem.core": "StartDebugging",
-        "schoolmanagementsystem.core.api": "StartDebugging"
+        "schoolmanagementsystem.core.api": "StartDebugging",
+        "schoolmanagementsystem.notifications.api": "StartDebugging"
       }
     }
   }
