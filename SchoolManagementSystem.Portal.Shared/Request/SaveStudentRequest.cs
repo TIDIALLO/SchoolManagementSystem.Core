@@ -1,4 +1,6 @@
-﻿namespace SchoolManagementSystem.Portal.Shared.Request
+﻿using SchoolManagementSystem.Domain.Entities;
+
+namespace SchoolManagementSystem.Portal.Shared.Request
 {
     public class SaveStudentRequest
     {
@@ -8,5 +10,8 @@
         public DateTime DateOfBirth { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
+
+        public ICollection<EnrollmentEntity> Enrollments { get; set; }
+
     }
 }

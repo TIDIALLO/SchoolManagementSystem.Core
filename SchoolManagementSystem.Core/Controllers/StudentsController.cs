@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.DAL;
 using SchoolManagementSystem.Domain.Entities;
@@ -13,6 +12,7 @@ namespace SchoolManagementSystem.Core.Controllers
     {
         private readonly ILogger<StudentsController> _logger;
         private readonly ApplicationDbContext _dbcontext;
+
         public StudentsController(IServiceProvider serviceProvider) 
         {
             _logger = serviceProvider.GetRequiredService<ILogger<StudentsController>>();
@@ -21,15 +21,18 @@ namespace SchoolManagementSystem.Core.Controllers
 
 
         [HttpGet]
-        [Route("{s  tudentId}/get-student")]
-        public async Task<IActionResult> GetStudent(Guid StudentId)
+        [Route("get-student/{id}")]
+        public async Task<IActionResult> GetStudent(Guid id)
         {
-            return Ok("Student Id=##########");
+            var student = await _dbcontext.Students.FirstOrDefaultAsync(u=> u.StudentId == id);
+            if (student == null) return NotFound( "Not Found");
+
+            return Ok(student);
         }
 
         [HttpGet]
         [Route("get-students")]
-        public async Task<IActionResult> GetStudents(Guid StudentId)
+        public async Task<IActionResult> GetStudents()
         {
             return Ok("Student Id=##########");
         }
@@ -40,15 +43,12 @@ namespace SchoolManagementSystem.Core.Controllers
         {
             var entity = new StudentEntity
             {
-                /* FirstName = "Aly",
-                 LastName = "Diop",
-                 Email = "diop.aly@gmail.com",
-                 DateOfBirth = DateTime.UtcNow,*/
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Email = request.Email,
                 DateOfBirth = request.DateOfBirth,
-                Address = request.Address
+                Address = request.Address,
+                Enrollments = request.Enrollments
             };
             await _dbcontext.Students.AddAsync(entity);
             await _dbcontext.SaveChangesAsync();

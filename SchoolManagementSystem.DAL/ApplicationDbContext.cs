@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Domain.Entities;
-using SchoolManagementSystem.Domain.Models;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
+
 
 namespace SchoolManagementSystem.DAL
 {
@@ -16,6 +14,9 @@ namespace SchoolManagementSystem.DAL
                 public virtual DbSet<EnrollmentModel> EnrollmentModels { get; set; }
                 public virtual DbSet<StudentModel> StudentModels { get; set; }
                 public virtual DbSet<TeacherModel> TeacherModels { get; set; }*/
-        public virtual DbSet<StudentEntity> Students { get; set; }
+            public virtual DbSet<StudentEntity> Students { get; set; }  
+            public virtual DbSet<TeacherEntity> Teacher { get; set; }
+            public virtual DbSet<CourseEntity> Courses { get; set; }
+            public virtual DbSet<EnrollmentEntity> Enrollments { get; set; }
     }
 }
