@@ -1,7 +1,39 @@
 version: '3.4'
 
 services:
+  schoolmanagementsystem-db:
+    restart: always
+    container_name: schoolmanagementsystem-db
+    environment:
+        POSTGRES_USER: schoolAdmin
+        POSTGRES_PASSWORD: P@55er123#                            
+        POSTGRES_DB: school
+    ports:
+        - 5432:5432
+
+
+  adminer:
+    restart: always
+    container_name: adminer
+    ports:
+      - 8082:8080
+
   schoolmanagementsystem.core.api:
+    container_name: schoolmanagementsystem-core-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+      - 8080:8080
+      - 8081:8081
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+
+  schoolmanagementsystem.notifications.api:
+    container_name: schoolmanagementsystem-notifications-api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080

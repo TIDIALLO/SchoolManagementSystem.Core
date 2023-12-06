@@ -1,8 +1,33 @@
 version: '3.4'
 
 services:
+  schoolmanagementsystem-db:
+    image: postgres:15-alpine   
+    networks:
+      - backend
+
+  adminer:
+    image: adminer
+    networks:
+      - backend
+   
+
   schoolmanagementsystem.core.api:
-    image: ${DOCKER_REGISTRY-}schoolmanagementsystemcoreapi
+    image: ${DOCKER_REGISTRY-}schoolmanagementsystem-core-api
     build:
       context: .
       dockerfile: SchoolManagementSystem.Core/Dockerfile
+    networks:
+      - backend
+
+  schoolmanagementsystem.notifications.api:
+    image: ${DOCKER_REGISTRY-}schoolmanagementsystem-notifications-api
+    build:
+      context: .
+      dockerfile: SchoolManagementSystem.Notifications.Api/Dockerfile
+    networks:
+      - backend
+
+networks:
+   backend:
+    name: Schoolmanagementsystem-network
