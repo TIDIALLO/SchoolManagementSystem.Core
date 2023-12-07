@@ -25,16 +25,18 @@ namespace SchoolManagementSystem.Core.Controllers
         public async Task<IActionResult> GetStudent(Guid id)
         {
             var student = await _dbcontext.Students.FirstOrDefaultAsync(u=> u.StudentId == id);
-            if (student == null) return NotFound( "Not Found");
+            if (student == null) return NotFound("student Not Found");
 
             return Ok(student);
         }
 
+
+        //get students
         [HttpGet]
         [Route("get-students")]
-        public async Task<IActionResult> GetStudents()
+        public async Task<ActionResult<IEnumerable<StudentEntity>>> GetStudents()
         {
-            return Ok("Student Id=##########");
+            return await _dbcontext.Students.ToListAsync();
         }
 
         [HttpPost]
@@ -56,18 +58,59 @@ namespace SchoolManagementSystem.Core.Controllers
             return Ok(request);
         }
 
+
         [HttpPut]
-        [Route("modify-student")]
-        public async Task<IActionResult> UpdateStudent(Guid StudentId)
+        [Route("update-student/{id}")]
+        public async Task<IActionResult> UpdateStudent(Guid id, StudentEntity student)
         {
-            return Ok("Student Id=##########");
+            if(id != student.StudentId)
+            {
+                return BadRequest();
+            }
+            _dbcontext.Entry(student).State = EntityState.Modified;
+
+            try
+            {
+                await _dbcontext.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!StudentExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return NoContent();
+
         }
 
         [HttpDelete]
-        [Route("remove-student")]
-        public async Task<IActionResult> DeleteStudent(Guid StudentId)
+        [Route("remove-student/{id}")]
+        public async Task<IActionResult> DeleteStudent(Guid id)
         {
-            return Ok("Student Id=##########");
+            var student = await _dbcontext.Students.FindAsync(id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+            _dbcontext.Students.Remove(student);
+            await _dbcontext.SaveChangesAsync();
+
+            return Ok(student);
         }
+
+
+
+        private bool StudentExists(Guid id)
+        {
+            return _dbcontext.Students.Any(e => e.StudentId == id);
+        }
+
     }
+
+    
 }
