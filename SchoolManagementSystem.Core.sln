@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolManagementSystem.Core.Api", "SchoolManagementSystem.Core\SchoolManagementSystem.Core.Api.csproj", "{61C2E39C-5DE5-48C5-B08A-ED5B795416D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolManagementSystem.Core.Api", "SchoolManagementSystem.Core\SchoolManagementSystem.Core.Api.csproj", "{61C2E39C-5DE5-48C5-B08A-ED5B795416D1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{033A4F6C-4E07-4B27-9D78-C85DED6F3E06}"
 EndProject
@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Orchestration", "Orchestrat
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{1E85D25C-BDF0-4C60-A9EA-C0038BE083AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolManagementSystem.Notifications.Api", "SchoolManagementSystem.Notifications.Api\SchoolManagementSystem.Notifications.Api.csproj", "{DED3313C-D696-4B08-B163-701C05391640}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolManagementSystem.Notifications.Api", "SchoolManagementSystem.Notifications.Api\SchoolManagementSystem.Notifications.Api.csproj", "{DED3313C-D696-4B08-B163-701C05391640}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{E9D92A73-0390-43C5-9B20-943B3850C9C9}"
 EndProject
@@ -19,11 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccessLayer", "DataAccessLayer", "{69998494-4369-406B-AC06-C0FE979F4C9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolManagementSystem.Domain", "SchoolManagementSystem.Domain\SchoolManagementSystem.Domain.csproj", "{5293F0E4-E237-463D-B842-4793C9041B72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolManagementSystem.Domain", "SchoolManagementSystem.Domain\SchoolManagementSystem.Domain.csproj", "{5293F0E4-E237-463D-B842-4793C9041B72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolManagementSystem.DAL", "SchoolManagementSystem.DAL\SchoolManagementSystem.DAL.csproj", "{51BD840C-D382-41A2-A3A5-3DE1A8BB6EA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolManagementSystem.DAL", "SchoolManagementSystem.DAL\SchoolManagementSystem.DAL.csproj", "{51BD840C-D382-41A2-A3A5-3DE1A8BB6EA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolManagementSystem.Portal.Shared", "SchoolManagementSystem.Portal.Shared\SchoolManagementSystem.Portal.Shared.csproj", "{E9B71609-3F3B-498F-9827-2C468774E335}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SchoolManagementSystem.Portal.Shared", "SchoolManagementSystem.Portal.Shared\SchoolManagementSystem.Portal.Shared.csproj", "{E9B71609-3F3B-498F-9827-2C468774E335}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
