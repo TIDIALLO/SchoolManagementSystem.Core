@@ -12,8 +12,8 @@ using SchoolManagementSystem.DAL;
 namespace SchoolManagementSystem.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231206133123_InitialSchemas")]
-    partial class InitialSchemas
+    [Migration("20231213114147_UpdateEnityMigration")]
+    partial class UpdateEnityMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,22 +33,19 @@ namespace SchoolManagementSystem.DAL.Migrations
                         .HasColumnName("courseid");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("firstname");
 
-                    b.Property<Guid>("TeacherId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("teacherid");
+                    b.Property<Guid?>("TeacherEntityTeacherId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("title");
 
                     b.HasKey("CourseId");
 
-                    b.HasIndex("TeacherId");
+                    b.HasIndex("TeacherEntityTeacherId");
 
                     b.ToTable("courses");
                 });
@@ -89,7 +86,6 @@ namespace SchoolManagementSystem.DAL.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("Address");
 
@@ -98,18 +94,15 @@ namespace SchoolManagementSystem.DAL.Migrations
                         .HasColumnName("dateofbirth");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("Email");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("firstname");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("lastname");
@@ -130,45 +123,40 @@ namespace SchoolManagementSystem.DAL.Migrations
                         .HasColumnName("teacherid");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("email");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("firstname");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("lastname");
 
                     b.Property<string>("Subject")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("subject");
 
                     b.HasKey("TeacherId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.ToTable("teachers");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.CourseEntity", b =>
                 {
-                    b.HasOne("SchoolManagementSystem.Domain.Entities.TeacherEntity", "Teacher")
+                    b.HasOne("SchoolManagementSystem.Domain.Entities.TeacherEntity", null)
                         .WithMany("Courses")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Teacher");
+                        .HasForeignKey("TeacherEntityTeacherId");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.EnrollmentEntity", b =>
                 {
                     b.HasOne("SchoolManagementSystem.Domain.Entities.CourseEntity", "Course")
-                        .WithMany("Enrollments")
+                        .WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -182,11 +170,6 @@ namespace SchoolManagementSystem.DAL.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.CourseEntity", b =>
-                {
-                    b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.StudentEntity", b =>

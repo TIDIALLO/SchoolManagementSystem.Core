@@ -31,3 +31,6 @@ services:
 networks:
    backend:
     name: Schoolmanagementsystem-network
+
+volumes:
+  data-postgres:

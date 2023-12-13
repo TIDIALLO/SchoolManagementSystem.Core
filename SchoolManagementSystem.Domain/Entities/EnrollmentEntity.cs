@@ -16,7 +16,8 @@ public class EnrollmentEntity
     public Guid CourseId { get; set; }
     [Column("enrollmentdate")]
     public DateTime EnrollmentDate { get; set; }
-
-    public StudentEntity Student { get; set; }
-    public CourseEntity Course { get; set; }
+    [Column("student")]
+    public StudentEntity? Student { get; set; }
+    [Column("course")]
+    public CourseEntity? Course { get; set; }
 }
