@@ -1,113 +1,98 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SchoolManagementSystem.Core.Api.cqrs.Queries.StudentQueries;
+
+
+//using SchoolManagementSystem.Application.Student.Commands.CreateStudentCommand;
 using SchoolManagementSystem.DAL;
 using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
-
+using static SchoolManagementSystem.Core.Api.cqrs.Commands.StudentCommands.StudentCommands;
 namespace SchoolManagementSystem.Core.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class StudentsController : ControllerBase
     {
+        private readonly IMediator _mediator;
+        private readonly ApplicationDbContext _dbContext;
         private readonly ILogger<StudentsController> _logger;
-        private readonly ApplicationDbContext _dbcontext;
+        // private readonly IStudentRepository _studentRepository;
 
         public StudentsController(IServiceProvider serviceProvider) 
         {
             _logger = serviceProvider.GetRequiredService<ILogger<StudentsController>>();
-            _dbcontext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            _mediator = serviceProvider.GetRequiredService<IMediator>();
+            _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+            //  _studentRepository = serviceProvider.GetRequiredService<IStudentRepository>();
+
         }
 
+        //#######################    using Mapper and repository   ########################
+        /*        [HttpPost]
+                public async Task<ActionResult<StudentEntity>> CreateCategory(SaveStudentRequest request)
+                {
+                    var e = _mapper.Map<SaveStudentRequest>(request);
 
-        [HttpGet]
-        [Route("get-student/{id}")]
-        public async Task<IActionResult> GetStudent(Guid id)
-        {
-            var student = await _dbcontext.Students.FirstOrDefaultAsync(u=> u.StudentId == id);
-            if (student == null) return NotFound("student Not Found");
+                    await _studentRepository.SaveStudent(request);
 
-            return Ok(student);
-        }
+                    return CreatedAtAction("GetCategory", new { id = e.id }, e);
+                }*/
+
+        //################################################################################
 
 
-        //get students
-        [HttpGet]
-        [Route("get-students")]
-        public async Task<ActionResult<IEnumerable<StudentEntity>>> GetStudents()
-        {
-            return await _dbcontext.Students.ToListAsync();
-        }
-
+        //Save Student
         [HttpPost]
         [Route("save-student")]
         public async Task<IActionResult> SaveStudent(SaveStudentRequest request)
         {
-            var entity = new StudentEntity
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                DateOfBirth = request.DateOfBirth,
-                Address = request.Address,
-                Enrollments = request.Enrollments
-            };
-            await _dbcontext.Students.AddAsync(entity);
-            await _dbcontext.SaveChangesAsync();
+            var saveRequest = new SaveStudentCommand(request);
+            var result = await _mediator.Send(saveRequest);
 
             return Ok(request);
         }
 
 
-        [HttpPut]
-        [Route("update-student/{id}")]
-        public async Task<IActionResult> UpdateStudent(Guid id, StudentEntity student)
+        //get Student by Id
+        [HttpGet]
+        [Route("get-student/{id}")]
+        public async Task<IActionResult> GetStudentById(Guid id)
         {
-            if(id != student.StudentId)
-            {
-                return BadRequest();
-            }
-            _dbcontext.Entry(student).State = EntityState.Modified;
-
-            try
-            {
-                await _dbcontext.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StudentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return NoContent();
-
+            var result = await _mediator.Send(new CourseQueries.GetStudentQuery(id));
+            if (result == null) return NotFound($"Student with id '{id}' cannot be found!");
+            return Ok(result);
+          
         }
 
+        //get all students
+        [HttpGet]
+        [Route("get-students")]
+        public async Task<ActionResult<IEnumerable<StudentEntity>>> GetAllStudents()
+        {
+            var result = await _mediator.Send(new CourseQueries.GetAllStudentQuery());
+            return Ok(result);
+        }
+
+        //Update Student
+        [HttpPut]
+        [Route("update-student/{id}")]
+        public async Task<IActionResult> UpdateStudent(Guid id, SaveStudentRequest request)
+        {
+            var result = await _mediator.Send(new UpdateStudentCommand(request));
+            if (result == null) return NotFound("result Not Found");
+
+            return Ok(result);
+        }
+
+        //remove Student
         [HttpDelete]
         [Route("remove-student/{id}")]
         public async Task<IActionResult> DeleteStudent(Guid id)
         {
-            var student = await _dbcontext.Students.FindAsync(id);
-            if (student == null)
-            {
-                return NotFound();
-            }
-            _dbcontext.Students.Remove(student);
-            await _dbcontext.SaveChangesAsync();
-
-            return Ok(student);
-        }
-
-
-
-        private bool StudentExists(Guid id)
-        {
-            return _dbcontext.Students.Any(e => e.StudentId == id);
+            var result = await _mediator.Send(new DeleteStudentCommand(id));
+            return Ok(result);
         }
 
     }

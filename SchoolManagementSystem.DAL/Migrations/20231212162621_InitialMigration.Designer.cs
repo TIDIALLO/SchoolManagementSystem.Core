@@ -12,7 +12,7 @@ using SchoolManagementSystem.DAL;
 namespace SchoolManagementSystem.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231206122756_InitialMigration")]
+    [Migration("20231212162621_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -29,40 +29,48 @@ namespace SchoolManagementSystem.DAL.Migrations
                 {
                     b.Property<Guid>("CourseId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("courseid");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("firstname");
 
                     b.Property<Guid>("TeacherId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("teacherid");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("title");
 
                     b.HasKey("CourseId");
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("courses");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.EnrollmentEntity", b =>
                 {
                     b.Property<Guid>("EnrollmentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("enrollmentid");
 
                     b.Property<Guid>("CourseId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("courseid");
 
                     b.Property<DateTime>("EnrollmentDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("enrollmentdate");
 
                     b.Property<Guid>("StudentId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("studentid");
 
                     b.HasKey("EnrollmentId");
 
@@ -70,7 +78,7 @@ namespace SchoolManagementSystem.DAL.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("enrollments");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.StudentEntity", b =>
@@ -111,34 +119,42 @@ namespace SchoolManagementSystem.DAL.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Student");
+                    b.ToTable("students");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.TeacherEntity", b =>
                 {
                     b.Property<Guid>("TeacherId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("teacherid");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("email");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("firstname");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("lastname");
 
                     b.Property<string>("Subject")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("subject");
 
                     b.HasKey("TeacherId");
 
-                    b.ToTable("Teacher");
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("teachers");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.CourseEntity", b =>

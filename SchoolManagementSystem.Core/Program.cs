@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.DAL;
-
+using SchoolManagementSystem.Core.Api.Configurations;
+using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,6 +15,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SchoolManagementSystemContext"));
 });
+
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly, typeof(ApplicationDbContext).Assembly);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(MappingProfile).Assembly));
 
 var app = builder.Build();
 

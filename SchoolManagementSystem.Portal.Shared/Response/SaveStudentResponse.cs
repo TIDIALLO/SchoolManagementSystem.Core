@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SchoolManagementSystem.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,7 @@ namespace SchoolManagementSystem.Portal.Shared.Response
         public DateTime DateOfBirth { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
+        public ICollection<EnrollmentEntity> Enrollments { get; set; }
+
     }
 }
