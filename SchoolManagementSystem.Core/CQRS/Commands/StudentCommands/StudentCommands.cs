@@ -114,12 +114,7 @@ public static class StudentCommands
             public async Task<SaveStudentResponse> Handle(DeleteStudentCommand command, CancellationToken cancellationToken)
             {
                 
-                var studentToRemove = await _dbContext.Students.FindAsync(command.StudentId);
-
-                if (studentToRemove == null)
-                {
-                    return null;
-                }
+                var studentToRemove = await _dbContext.Students.FindAsync(command);
 
                 var deletedResponse = _mapper.Map<SaveStudentResponse>(studentToRemove);
 
@@ -129,22 +124,6 @@ public static class StudentCommands
                 return deletedResponse;
             }
 
-            /*                var entity = _mapper.Map<StudentEntity>(command.Student);
-
-                            // Check if the mapped entity is null
-                            if (entity == null)
-                            {
-                                return null;
-                            }
-
-                            _dbContext.Entry(entity).State = EntityState.Modified;
-
-                            await _dbContext.SaveChangesAsync(cancellationToken);
-
-                            // Map the updated entity back to SaveStudentResponse
-                            var updatedResponse = _mapper.Map<SaveStudentResponse>(entity);
-
-                            return updatedResponse;*/
         }
 
     }

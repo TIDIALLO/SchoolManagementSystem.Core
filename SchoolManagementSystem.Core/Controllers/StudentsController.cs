@@ -72,6 +72,7 @@ namespace SchoolManagementSystem.Core.Controllers
         public async Task<ActionResult<IEnumerable<StudentEntity>>> GetAllStudents()
         {
             var result = await _mediator.Send(new CourseQueries.GetAllStudentQuery());
+            if (result == null) return NotFound("result Not Found");
             return Ok(result);
         }
 
@@ -92,6 +93,7 @@ namespace SchoolManagementSystem.Core.Controllers
         public async Task<IActionResult> DeleteStudent(Guid id)
         {
             var result = await _mediator.Send(new DeleteStudentCommand(id));
+            if (result == null) return NotFound("result Not Found");
             return Ok(result);
         }
 

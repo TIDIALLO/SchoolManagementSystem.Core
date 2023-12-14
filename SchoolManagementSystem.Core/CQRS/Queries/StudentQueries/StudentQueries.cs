@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Portal.Shared.Response;
 using SchoolManagementSystem.Portal.Shared.Request;
+using SchoolManagementSystem.Application.Interfaces;
 
 namespace SchoolManagementSystem.Core.Api.cqrs.Queries.StudentQueries;
 
@@ -13,14 +14,17 @@ public static class CourseQueries
     /// GetStudent
     /// </summary>
     #region GetStudent
-    public class GetStudentQuery : IRequest<SaveStudentResponse>
+    public class GetStudentQuery : IRequest<SaveStudentResponse> , ICachable<SaveStudentResponse>
     {
         public GetStudentQuery(Guid studentId)
         {
             StudentId = studentId;
+            Key = studentId.ToString();
         }
 
         public Guid StudentId { get; set; }
+        public string Key { get; set; }
+        public int Expiration { get; set; } = 30;
     }
 
     public class GetStudentQueryHandler : IRequestHandler<GetStudentQuery, SaveStudentResponse>
@@ -34,7 +38,7 @@ public static class CourseQueries
             _mapper = serviceProvider.GetRequiredService<IMapper>();
         }
 
-        public async Task<SaveStudentResponse> Handle(GetStudentQuery query, CancellationToken cancellationToken)
+        public async Task<SaveStudentResponse?> Handle(GetStudentQuery query, CancellationToken cancellationToken)
         {
             var persisted = await _dbContext.Students.FirstOrDefaultAsync(e => e.StudentId == query.StudentId, cancellationToken);
             return persisted == null ? null : _mapper.Map<SaveStudentResponse>(persisted);
@@ -46,12 +50,14 @@ public static class CourseQueries
     /// GetAllStudents
     /// </summary>
     #region GetAllStudents
-    public class GetAllStudentQuery : IRequest<List<SaveStudentResponse>>
+    public class GetAllStudentQuery : IRequest<List<SaveStudentResponse>>, ICachable<List<SaveStudentResponse>>
     {
         public GetAllStudentQuery()
         {
         }
         public List<SaveStudentResponse> Student { get; set; }
+        public string Key { get; set; } = "AllUsers";
+        public int Expiration { get; set; } = 5;
     }
 
     public class GetAllStudentQueryHandler : IRequestHandler<GetAllStudentQuery, List<SaveStudentResponse>>
