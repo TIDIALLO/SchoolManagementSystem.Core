@@ -67,8 +67,11 @@ public static class CourseQueries
 
         public async Task<List<SaveCourseResponse>> Handle(GetAllCourseQuery query, CancellationToken cancellationToken)
         {
+            MemoryStream memoryStream = null;
+            var position = memoryStream.Position;
+
             var courses = await _dbContext.Courses.ToListAsync(cancellationToken);
-            return _mapper.Map<List<SaveCourseResponse>>(courses);
+            return  _mapper.Map<List<SaveCourseResponse>>(courses);
         }
     }
 

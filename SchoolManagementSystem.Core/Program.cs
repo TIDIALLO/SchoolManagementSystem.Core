@@ -4,6 +4,8 @@ using SchoolManagementSystem.Core.Api.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using SchoolManagementSystem.Application;
+using SchoolManagementSystem.Application.Middlewares;
+using SchoolManagementSystem.Application.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -37,6 +39,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseCustomException();
 
 
 app.MapControllers();

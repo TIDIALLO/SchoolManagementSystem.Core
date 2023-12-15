@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Portal.Shared.Response;
 using SchoolManagementSystem.Portal.Shared.Request;
+using SchoolManagementSystem.Application;
 
 namespace SchoolManagementSystem.Core.Api.cqrs.Queries.EnrollmentQueries;
 
@@ -46,7 +47,7 @@ public static class EnrollmentQueries
     /// GetAllEnrollments
     /// </summary>
     #region GetAllEnrollments
-    public class GetAllEnrollmentQuery : IRequest<List<SaveEnrollmentResponse>>
+    public class GetAllEnrollmentQuery : IRequest<List<SaveEnrollmentResponse>>, CacheBehavior<List<SaveEnrollmentResponse>> 
     {
         public GetAllEnrollmentQuery()
         {
@@ -67,12 +68,19 @@ public static class EnrollmentQueries
 
         public async Task<List<SaveEnrollmentResponse>> Handle(GetAllEnrollmentQuery query, CancellationToken cancellationToken)
         {
-            var Enrollments = await _dbContext.Enrollments.ToListAsync(cancellationToken);
-            return _mapper.Map<List<SaveEnrollmentResponse>>(Enrollments);
+            MemoryStream memoryStream = null;
+            var position = memoryStream.Position;
+
+            var result = await _dbContext.Enrollments.ToListAsync(cancellationToken);
+            return result == null ? null : _mapper.Map<List<SaveEnrollmentResponse>>(result);
         }
     }
 
     #endregion
 
 
+}
+
+internal interface CacheBehavior<T>
+{
 }

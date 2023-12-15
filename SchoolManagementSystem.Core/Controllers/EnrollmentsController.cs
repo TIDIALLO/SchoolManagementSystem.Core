@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SchoolManagementSystem.Core.Api.cqrs.Queries.EnrollmentQueries;
 using SchoolManagementSystem.DAL;
 using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
@@ -65,7 +66,10 @@ public class EnrollmentsController : ControllerBase
     [Route("get-enrollments")]
     public async Task<ActionResult<IEnumerable<EnrollmentEntity>>> GetEnrollments()
     {
-        return await _dbContext.Enrollments.ToListAsync();
+        var result = await _mediator.Send(new EnrollmentQueries.GetAllEnrollmentQuery());
+        if (result == null) return NotFound("result Not Found");
+        return Ok(result);
+        //return await _dbContext.Enrollments.ToListAsync();
     }
 
    
