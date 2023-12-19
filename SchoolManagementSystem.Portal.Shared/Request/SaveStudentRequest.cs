@@ -1,5 +1,4 @@
 ﻿using SchoolManagementSystem.Domain.Entities;
-
 namespace SchoolManagementSystem.Portal.Shared.Request
 {
     public class SaveStudentRequest

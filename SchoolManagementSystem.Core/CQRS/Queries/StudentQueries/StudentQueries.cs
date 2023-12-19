@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Portal.Shared.Response;
 using SchoolManagementSystem.Portal.Shared.Request;
 using SchoolManagementSystem.Application.Interfaces;
+using Hangfire;
+using Workers;
 
 namespace SchoolManagementSystem.Core.Api.cqrs.Queries.StudentQueries;
 
@@ -40,7 +42,7 @@ public static class CourseQueries
 
         public async Task<SaveStudentResponse?> Handle(GetStudentQuery query, CancellationToken cancellationToken)
         {
-            var persisted = await _dbContext.Students.FirstOrDefaultAsync(e => e.StudentId == query.StudentId, cancellationToken);
+            var persisted = await _dbContext.Students.FirstOrDefaultAsync(e => e.Id == query.StudentId, cancellationToken);
             return persisted == null ? null : _mapper.Map<SaveStudentResponse>(persisted);
         }
     }
@@ -62,18 +64,27 @@ public static class CourseQueries
 
     public class GetAllStudentQueryHandler : IRequestHandler<GetAllStudentQuery, List<SaveStudentResponse>>
     {
+        private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IEmailWorker _emailWorker;
+
 
         public GetAllStudentQueryHandler(IServiceProvider serviceProvider)
         {
             _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
             _mapper = serviceProvider.GetRequiredService<IMapper> ();
+            _backgroundJobClient = serviceProvider.GetRequiredService<IBackgroundJobClient>();
+            _emailWorker = serviceProvider.GetRequiredService<IEmailWorker>();
         }
 
         public async Task<List<SaveStudentResponse>> Handle(GetAllStudentQuery query, CancellationToken cancellationToken)
         {
             var students = await _dbContext.Students.ToListAsync(cancellationToken);
+            //Background Job.
+            _backgroundJobClient.Enqueue(() => _emailWorker.SendEmail("Email Batch", "######", "Welcome to the website."));
+            _backgroundJobClient.Schedule(() => _emailWorker.SendEmail("Schedule", "*********", "Welcome to the website."), TimeSpan.FromSeconds(10));
+
             return _mapper.Map<List<SaveStudentResponse>>(students);
         }
     }

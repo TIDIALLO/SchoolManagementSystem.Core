@@ -1,15 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SchoolManagementSystem.DAL;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace SchoolManagementSystem.Domain.Entities;
 
 [Table("courses")]
-public class CourseEntity
+public class CourseEntity: IEntity
 {
     [Key]
-    [Column("courseid")]
-    public Guid CourseId { get; set; }
+    [Column("id")]
+    public Guid Id { get; set; }
     [Column("title")]
     public string? Title { get; set; }
     [Column("firstname")]

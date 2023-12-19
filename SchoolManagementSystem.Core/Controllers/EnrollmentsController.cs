@@ -55,7 +55,7 @@ public class EnrollmentsController : ControllerBase
     [Route("get-enrollment/{id}")]
     public async Task<IActionResult> GetEnrollment(Guid id)
     {
-        var enrollment = await _dbContext.Enrollments.FirstOrDefaultAsync(u => u.EnrollmentId == id);
+        var enrollment = await _dbContext.Enrollments.FirstOrDefaultAsync(u => u.Id == id);
         if (enrollment == null) return NotFound("enrollment Not Found");
 
         return Ok(enrollment);
@@ -64,20 +64,20 @@ public class EnrollmentsController : ControllerBase
     //get enrollments
     [HttpGet]
     [Route("get-enrollments")]
-    public async Task<ActionResult<IEnumerable<EnrollmentEntity>>> GetEnrollments()
+/*    public async Task<ActionResult<IEnumerable<EnrollmentEntity>>> GetEnrollments()
     {
         var result = await _mediator.Send(new EnrollmentQueries.GetAllEnrollmentQuery());
         if (result == null) return NotFound("result Not Found");
         return Ok(result);
         //return await _dbContext.Enrollments.ToListAsync();
-    }
+    }*/
 
    
 
     //update enrollment
     [HttpPut]
     [Route("update-enrollment/{id}")]
-    public async Task<IActionResult> UpdateEnrollment(Guid id, EnrollmentEntity enrollment)
+/*    public async Task<IActionResult> UpdateEnrollment(Guid id, EnrollmentEntity enrollment)
     {
         if (id != enrollment.EnrollmentId)
         {
@@ -101,13 +101,13 @@ public class EnrollmentsController : ControllerBase
             }
         }
         return NoContent();
-    }
+    }*/
 
-    private bool EnrollmentExists(Guid id)
+/*    private bool EnrollmentExists(Guid id)
     {
         return _dbContext.Enrollments.Any(e => e.EnrollmentId == id);
     }
-
+*/
 
 
     //remove Student

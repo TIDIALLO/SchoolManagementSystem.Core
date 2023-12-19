@@ -51,27 +51,27 @@ namespace SchoolManagementSystem.Core.Controllers
         // get Teacher
         [HttpGet]
         [Route("get-teacher/{id}")]
-        public async Task<ActionResult<IEnumerable<TeacherEntity>>> GetTeacher(Guid id)
+/*        public async Task<ActionResult<IEnumerable<TeacherEntity>>> GetTeacher(Guid id)
         {
             var result = await _mediator.Send(new TeacherQueries.GetTeacherQuery(id));
             if (result == null) return NotFound($"Student with id '{id}' cannot be found!");
             return Ok(result);
-            /*var teacher = await _dbContext.Teacher.FirstOrDefaultAsync(u => u.TeacherId == id);
+            *//*var teacher = await _dbContext.Teacher.FirstOrDefaultAsync(u => u.TeacherId == id);
             if (teacher == null) return NotFound("Teacher Not Found");
 
             return Ok(teacher);
-            //return await _dbContext.Teacher.ToListAsync();*/
+            //return await _dbContext.Teacher.ToListAsync();*//*
         }
-
+*/
         //get teachers
         [HttpGet]
         [Route("get-teachers")]
-        public async Task<ActionResult<IEnumerable<TeacherEntity>>> GetTeachers()
+        /*public async Task<ActionResult<IEnumerable<TeacherEntity>>> GetTeachers()
         {
             var result = await _mediator.Send(new TeacherQueries.GetAllTeacherQuery());
             return Ok(result);
             // return await _dbContext.Teacher.ToListAsync();
-        }
+        }*/
 
 
 
@@ -112,7 +112,7 @@ namespace SchoolManagementSystem.Core.Controllers
         [Route("remove-teacher/{id}")]
         public async Task<IActionResult> RemoveTeacher(Guid id)
         {
-            var result = await _mediator.Send(new DeleteStudentCommand(id));
+            var result = await _mediator.Send(new DeleteTeacherCommand(id));
             return Ok(result);
             /*  var teacher = await _dbContext.Teacher.FindAsync(id);
               if (teacher == null)

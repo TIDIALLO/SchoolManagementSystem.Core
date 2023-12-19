@@ -20,25 +20,25 @@ public static class StudentCommands
 
     public sealed class SaveStudentCommandHandler : IRequestHandler<SaveStudentCommand, SaveStudentResponse>
     {
-        private readonly ApplicationDbContext _dbContext;
+        //private readonly ApplicationDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public SaveStudentCommandHandler(IServiceProvider serviceProvider)
         {
-            _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
             _mapper = serviceProvider.GetRequiredService<IMapper>();
+            _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
         }
 
         public async Task<SaveStudentResponse> Handle(SaveStudentCommand command, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<StudentEntity>(command.Student);
+            await _unitOfWork.Students.AddAsync(entity);
+            _unitOfWork.Commit();
+            var persisted = await _unitOfWork.Students.GetByIdAsync(entity.Id);
+            return _mapper.Map<SaveStudentResponse>(persisted);
+           
 
-            await _dbContext.Students.AddAsync(entity);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-
-            var persited = await _dbContext.Students.FirstOrDefaultAsync(s => s.StudentId == entity.StudentId);
-
-            return _mapper.Map<SaveStudentResponse>(persited);
         }
     }
 
@@ -56,33 +56,22 @@ public static class StudentCommands
 
         public sealed class UpdateStudentCommandHandler : IRequestHandler<UpdateStudentCommand, SaveStudentResponse>
         {
-            private readonly ApplicationDbContext _dbContext;
+            private readonly IUnitOfWork _unitOfWork;
             private readonly IMapper _mapper;
 
             public UpdateStudentCommandHandler(IServiceProvider serviceProvider)
             {
-                _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
                 _mapper = serviceProvider.GetRequiredService<IMapper>();
             }
 
             public async Task<SaveStudentResponse> Handle(UpdateStudentCommand command, CancellationToken cancellationToken)
             {
                 var entity = _mapper.Map<StudentEntity>(command.Student);
+                await _unitOfWork.Students.UpdateAsync(entity);
+                _unitOfWork.Commit();
 
-                // Check if the mapped entity is null
-                if (entity == null)
-                {
-                    return null;
-                }
-
-                _dbContext.Entry(entity).State = EntityState.Modified;
-
-                await _dbContext.SaveChangesAsync(cancellationToken);
-
-                // Map the updated entity back to SaveStudentResponse
-                var updatedResponse = _mapper.Map<SaveStudentResponse>(entity);
-
-                return updatedResponse;
+                return _mapper.Map<SaveStudentResponse>(entity); ;
             }
         }
     }
@@ -92,36 +81,32 @@ public static class StudentCommands
     #region  DeleteStudent
     public class DeleteStudentCommand : IRequest<SaveStudentResponse>
     {
-        public DeleteStudentCommand(Guid studentId)
+        public DeleteStudentCommand(SaveStudentRequest student)
         {
-            StudentId = studentId;
+            Student = student;
         }
-        public Guid StudentId { get; }
+        //public Guid StudentId { get; }
 
-        //public SaveStudentRequest Student { get; set; }
+        public SaveStudentRequest Student { get; set; }
 
         public sealed class DeleteStudentCommandHandler : IRequestHandler<DeleteStudentCommand, SaveStudentResponse>
         {
-            private readonly ApplicationDbContext _dbContext;
+            private readonly IUnitOfWork _unitOfWork;
             private readonly IMapper _mapper;
 
             public DeleteStudentCommandHandler(IServiceProvider serviceProvider)
             {
-                _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
                 _mapper = serviceProvider.GetRequiredService<IMapper>();
             }
 
             public async Task<SaveStudentResponse> Handle(DeleteStudentCommand command, CancellationToken cancellationToken)
             {
-                
-                var studentToRemove = await _dbContext.Students.FindAsync(command);
+                var entity = _mapper.Map<StudentEntity>(command);
+                await _unitOfWork.Students.RemoveAsync(entity);
+                _unitOfWork.Commit();
+                return _mapper.Map<SaveStudentResponse>(entity); ;
 
-                var deletedResponse = _mapper.Map<SaveStudentResponse>(studentToRemove);
-
-                _dbContext.Students.Remove(studentToRemove);
-                await _dbContext.SaveChangesAsync();
-
-                return deletedResponse;
             }
 
         }

@@ -36,7 +36,7 @@ public static class TeacherCommands
             await _dbContext.Teacher.AddAsync(entity);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            var persited = await _dbContext.Teacher.FirstOrDefaultAsync(s => s.TeacherId == entity.TeacherId);
+            var persited = await _dbContext.Teacher.FirstOrDefaultAsync(s => s.Id == entity.Id);
 
             return _mapper.Map<SaveTeacherResponse>(persited);
         }
@@ -88,7 +88,7 @@ public static class TeacherCommands
     }
 
     #endregion
-
+    
     #region  DeleteTeacher
     public class DeleteTeacherCommand : IRequest<SaveTeacherResponse>
     {

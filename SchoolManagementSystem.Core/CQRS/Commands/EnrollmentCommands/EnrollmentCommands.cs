@@ -11,7 +11,7 @@ namespace SchoolManagementSystem.Core.Api.cqrs.Commands.EnrollmentCommands;
 
 public static class EnrollmentCommands
 {
-    #region SaveEnrollment
+ #region SaveEnrollment
     public class SaveEnrollmentCommand : IRequest<SaveEnrollmentResponse>
     {
         public SaveEnrollmentCommand(SaveEnrollmentRequest Enrollment) => Enrollment = Enrollment;
@@ -36,118 +36,118 @@ public static class EnrollmentCommands
             await _dbContext.Enrollments.AddAsync(entity);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            var persited = await _dbContext.Enrollments.FirstOrDefaultAsync(s => s.EnrollmentId == entity.EnrollmentId);
+            var persited = await _dbContext.Enrollments.FirstOrDefaultAsync(s => s.Id == entity.Id);
 
             return _mapper.Map<SaveEnrollmentResponse>(persited);
         }
     }
 
     #endregion
+    /*
+     #region  UpdateEnrollment
+     public class UpdateEnrollmentCommand : IRequest<SaveEnrollmentResponse>
+     {
+         public UpdateEnrollmentCommand(SaveEnrollmentRequest enrollment)
+         {
+             Enrollment = enrollment;
+         }
 
-    #region  UpdateEnrollment
-    public class UpdateEnrollmentCommand : IRequest<SaveEnrollmentResponse>
-    {
-        public UpdateEnrollmentCommand(SaveEnrollmentRequest enrollment)
-        {
-            Enrollment = enrollment;
-        }
+         public SaveEnrollmentRequest Enrollment { get; set; }
 
-        public SaveEnrollmentRequest Enrollment { get; set; }
+         public sealed class UpdateEnrollmentCommandHandler : IRequestHandler<UpdateEnrollmentCommand, SaveEnrollmentResponse>
+         {
+             private readonly ApplicationDbContext _dbContext;
+             private readonly IMapper _mapper;
 
-        public sealed class UpdateEnrollmentCommandHandler : IRequestHandler<UpdateEnrollmentCommand, SaveEnrollmentResponse>
-        {
-            private readonly ApplicationDbContext _dbContext;
-            private readonly IMapper _mapper;
+             public UpdateEnrollmentCommandHandler(IServiceProvider serviceProvider)
+             {
+                 _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                 _mapper = serviceProvider.GetRequiredService<IMapper>();
+             }
 
-            public UpdateEnrollmentCommandHandler(IServiceProvider serviceProvider)
-            {
-                _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                _mapper = serviceProvider.GetRequiredService<IMapper>();
-            }
+             public async Task<SaveEnrollmentResponse> Handle(UpdateEnrollmentCommand command, CancellationToken cancellationToken)
+             {
+                 var entity = _mapper.Map<EnrollmentEntity>(command.Enrollment);
 
-            public async Task<SaveEnrollmentResponse> Handle(UpdateEnrollmentCommand command, CancellationToken cancellationToken)
-            {
-                var entity = _mapper.Map<EnrollmentEntity>(command.Enrollment);
+                 // Check if the mapped entity is null
+                 if (entity == null)
+                 {
+                     return null;
+                 }
 
-                // Check if the mapped entity is null
-                if (entity == null)
-                {
-                    return null;
-                }
+                 _dbContext.Entry(entity).State = EntityState.Modified;
 
-                _dbContext.Entry(entity).State = EntityState.Modified;
+                 await _dbContext.SaveChangesAsync(cancellationToken);
 
-                await _dbContext.SaveChangesAsync(cancellationToken);
+                 // Map the updated entity back to SaveEnrollmentResponse
+                 var updatedResponse = _mapper.Map<SaveEnrollmentResponse>(entity);
 
-                // Map the updated entity back to SaveEnrollmentResponse
-                var updatedResponse = _mapper.Map<SaveEnrollmentResponse>(entity);
+                 return updatedResponse;
+             }
+         }
+     }
 
-                return updatedResponse;
-            }
-        }
-    }
+     #endregion
 
-    #endregion
+     #region  DeleteEnrollment
+     public class DeleteEnrollmentCommand : IRequest<SaveEnrollmentResponse>
+     {
+         public DeleteEnrollmentCommand(Guid enrollmentId)
+         {
+             EnrollmentId = enrollmentId;
+         }
+         public Guid EnrollmentId { get; }
 
-    #region  DeleteEnrollment
-    public class DeleteEnrollmentCommand : IRequest<SaveEnrollmentResponse>
-    {
-        public DeleteEnrollmentCommand(Guid enrollmentId)
-        {
-            EnrollmentId = enrollmentId;
-        }
-        public Guid EnrollmentId { get; }
+         //public SaveEnrollmentRequest Enrollment { get; set; }
 
-        //public SaveEnrollmentRequest Enrollment { get; set; }
+         public sealed class DeleteEnrollmentCommandHandler : IRequestHandler<DeleteEnrollmentCommand, SaveEnrollmentResponse>
+         {
+             private readonly ApplicationDbContext _dbContext;
+             private readonly IMapper _mapper;
 
-        public sealed class DeleteEnrollmentCommandHandler : IRequestHandler<DeleteEnrollmentCommand, SaveEnrollmentResponse>
-        {
-            private readonly ApplicationDbContext _dbContext;
-            private readonly IMapper _mapper;
+             public DeleteEnrollmentCommandHandler(IServiceProvider serviceProvider)
+             {
+                 _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                 _mapper = serviceProvider.GetRequiredService<IMapper>();
+             }
 
-            public DeleteEnrollmentCommandHandler(IServiceProvider serviceProvider)
-            {
-                _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                _mapper = serviceProvider.GetRequiredService<IMapper>();
-            }
+             public async Task<SaveEnrollmentResponse> Handle(DeleteEnrollmentCommand command, CancellationToken cancellationToken)
+             {
 
-            public async Task<SaveEnrollmentResponse> Handle(DeleteEnrollmentCommand command, CancellationToken cancellationToken)
-            {
-                
-                var enrollmentToRemove = await _dbContext.Enrollments.FindAsync(command.EnrollmentId);
+                 var enrollmentToRemove = await _dbContext.Enrollments.FindAsync(command.EnrollmentId);
 
-                if (enrollmentToRemove == null)
-                {
-                    return null;
-                }
+                 if (enrollmentToRemove == null)
+                 {
+                     return null;
+                 }
 
-                var deletedResponse = _mapper.Map<SaveEnrollmentResponse>(enrollmentToRemove);
+                 var deletedResponse = _mapper.Map<SaveEnrollmentResponse>(enrollmentToRemove);
 
-                _dbContext.Enrollments.Remove(enrollmentToRemove);
-                await _dbContext.SaveChangesAsync();
+                 _dbContext.Enrollments.Remove(enrollmentToRemove);
+                 await _dbContext.SaveChangesAsync();
 
-                return deletedResponse;
-            }
+                 return deletedResponse;
+             }
 
-            /*                var entity = _mapper.Map<EnrollmentEntity>(command.Enrollment);
+             *//*                var entity = _mapper.Map<EnrollmentEntity>(command.Enrollment);
 
-                            // Check if the mapped entity is null
-                            if (entity == null)
-                            {
-                                return null;
-                            }
+                             // Check if the mapped entity is null
+                             if (entity == null)
+                             {
+                                 return null;
+                             }
 
-                            _dbContext.Entry(entity).State = EntityState.Modified;
+                             _dbContext.Entry(entity).State = EntityState.Modified;
 
-                            await _dbContext.SaveChangesAsync(cancellationToken);
+                             await _dbContext.SaveChangesAsync(cancellationToken);
 
-                            // Map the updated entity back to SaveEnrollmentResponse
-                            var updatedResponse = _mapper.Map<SaveEnrollmentResponse>(entity);
+                             // Map the updated entity back to SaveEnrollmentResponse
+                             var updatedResponse = _mapper.Map<SaveEnrollmentResponse>(entity);
 
-                            return updatedResponse;*/
-        }
+                             return updatedResponse;*//*
+         }
 
-    }
+     }
 
-    #endregion
+     #endregion*/
 }

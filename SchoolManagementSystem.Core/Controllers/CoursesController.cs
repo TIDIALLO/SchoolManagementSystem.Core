@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SchoolManagementSystem.Core.Api.cqrs.Queries.CourseQueries;
 using SchoolManagementSystem.DAL;
 using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
@@ -54,7 +55,7 @@ public class CoursesController : ControllerBase
     [Route("get-course/{id}")]
     public async Task<IActionResult> GetCourse(Guid id)
     {
-        var course = await _dbContext.Courses.FirstOrDefaultAsync(u => u.CourseId == id);
+        var course = await _dbContext.Courses.FirstOrDefaultAsync(u => u.Id == id);
         if (course == null) return NotFound("course Not Found");
 
         return Ok(course);
@@ -63,10 +64,11 @@ public class CoursesController : ControllerBase
     //get courses
     [HttpGet]
     [Route("get-courses")]
-    public async Task<ActionResult<IEnumerable<CourseEntity>>> GetCoursess()
+   /* public async Task<ActionResult<IEnumerable<CourseEntity>>> GetCourses()
     {
-        return await _dbContext.Courses.ToListAsync();
-    }
+        var result = await _mediator.Send(new CourseQueries.GetCourseQuery());
+        return Ok(result);
+    }*/
 
 
   
@@ -74,7 +76,7 @@ public class CoursesController : ControllerBase
     //Update Student
     [HttpPut]
     [Route("update-course/{id}")]
-    public async Task<IActionResult> UpdateCourse(Guid id, CourseEntity course)
+ /*   public async Task<IActionResult> UpdateCourse(Guid id, CourseEntity course)
     {
         if (id != course.CourseId)
         {
@@ -98,7 +100,7 @@ public class CoursesController : ControllerBase
             }
         }
         return NoContent();
-    }
+    }*/
 
 
     //remove course
@@ -119,7 +121,7 @@ public class CoursesController : ControllerBase
 
     private bool CourseExists(Guid id)
     {
-        return _dbContext.Courses.Any(e => e.CourseId == id);
+        return _dbContext.Courses.Any(e => e.Id == id);
     }
 
 

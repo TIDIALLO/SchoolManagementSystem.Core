@@ -6,6 +6,10 @@ using MediatR;
 using SchoolManagementSystem.Application;
 using SchoolManagementSystem.Application.Middlewares;
 using SchoolManagementSystem.Application.Extensions;
+using Workers;
+using Hangfire;
+using Hangfire.PostgreSql;
+using ConnectLive.Core.Api.Filters;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -19,6 +23,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SchoolManagementSystemContext"));
 });
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEmailWorker, EmailWorker>();
+
+//builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+
+
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly, typeof(ApplicationDbContext).Assembly);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(MappingProfile).Assembly));
@@ -26,6 +37,9 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Map
 builder.Services.AddMemoryCache();
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(WatchBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheBehavior<,>));
+
+builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(options => options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("SchoolManagementSystemContext"))));
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -43,5 +57,9 @@ app.UseCustomException();
 
 
 app.MapControllers();
+app.UseHangfireDashboard("/workers", new DashboardOptions
+{
+    Authorization = new[] { new AuthorizationFilter() }
+});
 
 app.Run();

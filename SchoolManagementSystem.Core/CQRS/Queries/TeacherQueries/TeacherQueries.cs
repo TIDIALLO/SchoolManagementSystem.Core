@@ -36,7 +36,7 @@ public static class TeacherQueries
 
         public async Task<SaveTeacherResponse> Handle(GetTeacherQuery query, CancellationToken cancellationToken)
         {
-            var persisted = await _dbContext.Teacher.FirstOrDefaultAsync(e => e.TeacherId == query.TeacherId, cancellationToken);
+            var persisted = await _dbContext.Teacher.FirstOrDefaultAsync(e => e.Id == query.TeacherId, cancellationToken);
             return persisted == null ? null : _mapper.Map<SaveTeacherResponse>(persisted);
         }
     }

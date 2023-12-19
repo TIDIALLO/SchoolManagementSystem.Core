@@ -36,102 +36,102 @@ public static class CourseCommands
             await _dbContext.Courses.AddAsync(entity);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            var persited = await _dbContext.Courses.FirstOrDefaultAsync(s => s.CourseId == entity.CourseId);
+            var persited = await _dbContext.Courses.FirstOrDefaultAsync(s => s.Id == entity.Id);
 
             return _mapper.Map<SaveCourseResponse>(persited);
         }
     }
 
-     #endregion
-
-    #region  UpdateCourse
-    public class UpdateCourseCommand : IRequest<SaveCourseResponse>
-    {
-        public UpdateCourseCommand(SaveCourseRequest Course)
-        {
-            Course = Course;
-        }
-
-        public SaveCourseRequest Course { get; set; }
-
-        public sealed class UpdateCourseCommandHandler : IRequestHandler<UpdateCourseCommand, SaveCourseResponse>
-        {
-            private readonly ApplicationDbContext _dbContext;
-            private readonly IMapper _mapper;
-
-            public UpdateCourseCommandHandler(IServiceProvider serviceProvider)
-            {
-                _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                _mapper = serviceProvider.GetRequiredService<IMapper>();
-            }
-
-            public async Task<SaveCourseResponse> Handle(UpdateCourseCommand command, CancellationToken cancellationToken)
-            {
-                var entity = _mapper.Map<CourseEntity>(command.Course);
-
-                // Check if the mapped entity is null
-                /*if (entity == null)
-                {
-                    return null;
-                }*/
-
-                _dbContext.Entry(entity).State = EntityState.Modified;
-
-                await _dbContext.SaveChangesAsync(cancellationToken);
-
-                // Map the updated entity back to SaveCourseResponse
-                var updatedResponse = _mapper.Map<SaveCourseResponse>(entity);
-
-                return updatedResponse;
-            }
-        }
-    }
-
     #endregion
-
-    #region  DeleteCourse
-    public class DeleteCourseCommand : IRequest<SaveCourseResponse>
-    {
-        public DeleteCourseCommand(Guid CourseId)
+    /*
+        #region  UpdateCourse
+        public class UpdateCourseCommand : IRequest<SaveCourseResponse>
         {
-            CourseId = CourseId;
-        }
-        public Guid CourseId { get; }
-
-        //public SaveCourseRequest Course { get; set; }
-
-        public sealed class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand, SaveCourseResponse>
-        {
-            private readonly ApplicationDbContext _dbContext;
-            private readonly IMapper _mapper;
-
-            public DeleteCourseCommandHandler(IServiceProvider serviceProvider)
+            public UpdateCourseCommand(SaveCourseRequest Course)
             {
-                _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                _mapper = serviceProvider.GetRequiredService<IMapper>();
+                Course = Course;
             }
 
-            public async Task<SaveCourseResponse> Handle(DeleteCourseCommand command, CancellationToken cancellationToken)
-            {
-                
-                var courseToRemove = await _dbContext.Courses.FindAsync(command.CourseId);
+            public SaveCourseRequest Course { get; set; }
 
-                if (courseToRemove == null)
+            public sealed class UpdateCourseCommandHandler : IRequestHandler<UpdateCourseCommand, SaveCourseResponse>
+            {
+                private readonly ApplicationDbContext _dbContext;
+                private readonly IMapper _mapper;
+
+                public UpdateCourseCommandHandler(IServiceProvider serviceProvider)
                 {
-                    return null;
+                    _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                    _mapper = serviceProvider.GetRequiredService<IMapper>();
                 }
 
-                var deletedResponse = _mapper.Map<SaveCourseResponse>(courseToRemove);
+                public async Task<SaveCourseResponse> Handle(UpdateCourseCommand command, CancellationToken cancellationToken)
+                {
+                    var entity = _mapper.Map<CourseEntity>(command.Course);
 
-                _dbContext.Courses.Remove(courseToRemove);
-                await _dbContext.SaveChangesAsync();
+                    // Check if the mapped entity is null
+                    *//*if (entity == null)
+                    {
+                        return null;
+                    }*//*
 
-                return deletedResponse;
+                    _dbContext.Entry(entity).State = EntityState.Modified;
+
+                    await _dbContext.SaveChangesAsync(cancellationToken);
+
+                    // Map the updated entity back to SaveCourseResponse
+                    var updatedResponse = _mapper.Map<SaveCourseResponse>(entity);
+
+                    return updatedResponse;
+                }
+            }
+        }
+
+        #endregion
+
+        #region  DeleteCourse
+        public class DeleteCourseCommand : IRequest<SaveCourseResponse>
+        {
+            public DeleteCourseCommand(Guid CourseId)
+            {
+                CourseId = CourseId;
+            }
+            public Guid CourseId { get; }
+
+            //public SaveCourseRequest Course { get; set; }
+
+            public sealed class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand, SaveCourseResponse>
+            {
+                private readonly ApplicationDbContext _dbContext;
+                private readonly IMapper _mapper;
+
+                public DeleteCourseCommandHandler(IServiceProvider serviceProvider)
+                {
+                    _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                    _mapper = serviceProvider.GetRequiredService<IMapper>();
+                }
+
+                public async Task<SaveCourseResponse> Handle(DeleteCourseCommand command, CancellationToken cancellationToken)
+                {
+
+                    var courseToRemove = await _dbContext.Courses.FindAsync(command.CourseId);
+
+                    if (courseToRemove == null)
+                    {
+                        return null;
+                    }
+
+                    var deletedResponse = _mapper.Map<SaveCourseResponse>(courseToRemove);
+
+                    _dbContext.Courses.Remove(courseToRemove);
+                    await _dbContext.SaveChangesAsync();
+
+                    return deletedResponse;
+                }
+
             }
 
         }
 
-    }
-
-    #endregion
+        #endregion*/
 }

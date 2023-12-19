@@ -82,17 +82,15 @@ namespace SchoolManagementSystem.Core.Controllers
         public async Task<IActionResult> UpdateStudent(Guid id, SaveStudentRequest request)
         {
             var result = await _mediator.Send(new UpdateStudentCommand(request));
-            if (result == null) return NotFound("result Not Found");
-
             return Ok(result);
         }
 
         //remove Student
         [HttpDelete]
         [Route("remove-student/{id}")]
-        public async Task<IActionResult> DeleteStudent(Guid id)
+        public async Task<IActionResult> DeleteStudent(Guid id, SaveStudentRequest request)
         {
-            var result = await _mediator.Send(new DeleteStudentCommand(id));
+            var result = await _mediator.Send(new DeleteStudentCommand(request));
             if (result == null) return NotFound("result Not Found");
             return Ok(result);
         }

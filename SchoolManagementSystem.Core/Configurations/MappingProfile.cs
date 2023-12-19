@@ -2,15 +2,18 @@
 using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
 using SchoolManagementSystem.Portal.Shared.Response;
-
 namespace SchoolManagementSystem.Core.Api.Configurations;
 
 public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<SaveStudentRequest, StudentEntity>().ReverseMap();
-        CreateMap<StudentEntity, SaveStudentResponse>().ReverseMap();
+        CreateMap<SaveStudentRequest, StudentEntity>()
+            .ForMember(e => e.Id, options => options.MapFrom(e => e.StudentId))
+            .ReverseMap();
+        CreateMap<StudentEntity, SaveStudentResponse>()
+            .ForMember(e => e.StudentId, options => options.MapFrom(e => e.Id)).ReverseMap();
+
 
         CreateMap<SaveTeacherRequest, TeacherEntity>().ReverseMap();
         CreateMap<TeacherEntity, SaveTeacherResponse>().ReverseMap();

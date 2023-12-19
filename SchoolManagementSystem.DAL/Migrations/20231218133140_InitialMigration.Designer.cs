@@ -12,7 +12,7 @@ using SchoolManagementSystem.DAL;
 namespace SchoolManagementSystem.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231212162621_InitialMigration")]
+    [Migration("20231218133140_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -27,38 +27,35 @@ namespace SchoolManagementSystem.DAL.Migrations
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.CourseEntity", b =>
                 {
-                    b.Property<Guid>("CourseId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("courseid");
+                        .HasColumnName("id");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("firstname");
 
-                    b.Property<Guid>("TeacherId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("teacherid");
+                    b.Property<Guid?>("TeacherEntityId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("title");
 
-                    b.HasKey("CourseId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("TeacherId");
+                    b.HasIndex("TeacherEntityId");
 
                     b.ToTable("courses");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.EnrollmentEntity", b =>
                 {
-                    b.Property<Guid>("EnrollmentId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("enrollmentid");
+                        .HasColumnName("id");
 
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uuid")
@@ -72,7 +69,7 @@ namespace SchoolManagementSystem.DAL.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("studentid");
 
-                    b.HasKey("EnrollmentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
@@ -83,7 +80,7 @@ namespace SchoolManagementSystem.DAL.Migrations
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.StudentEntity", b =>
                 {
-                    b.Property<Guid>("StudentId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
@@ -114,7 +111,7 @@ namespace SchoolManagementSystem.DAL.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("lastname");
 
-                    b.HasKey("StudentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -124,10 +121,10 @@ namespace SchoolManagementSystem.DAL.Migrations
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.TeacherEntity", b =>
                 {
-                    b.Property<Guid>("TeacherId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("teacherid");
+                        .HasColumnName("id");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -149,7 +146,7 @@ namespace SchoolManagementSystem.DAL.Migrations
                         .HasColumnType("text")
                         .HasColumnName("subject");
 
-                    b.HasKey("TeacherId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -159,19 +156,15 @@ namespace SchoolManagementSystem.DAL.Migrations
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.CourseEntity", b =>
                 {
-                    b.HasOne("SchoolManagementSystem.Domain.Entities.TeacherEntity", "Teacher")
+                    b.HasOne("SchoolManagementSystem.Domain.Entities.TeacherEntity", null)
                         .WithMany("Courses")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Teacher");
+                        .HasForeignKey("TeacherEntityId");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.EnrollmentEntity", b =>
                 {
                     b.HasOne("SchoolManagementSystem.Domain.Entities.CourseEntity", "Course")
-                        .WithMany("Enrollments")
+                        .WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -185,11 +178,6 @@ namespace SchoolManagementSystem.DAL.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.CourseEntity", b =>
-                {
-                    b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.StudentEntity", b =>

@@ -37,7 +37,7 @@ public static class EnrollmentQueries
 
         public async Task<SaveEnrollmentResponse> Handle(GetEnrollmentQuery query, CancellationToken cancellationToken)
         {
-            var persisted = await _dbContext.Enrollments.FirstOrDefaultAsync(e => e.EnrollmentId == query.EnrollmentId, cancellationToken);
+            var persisted = await _dbContext.Enrollments.FirstOrDefaultAsync(e => e.Id == query.EnrollmentId, cancellationToken);
             return persisted == null ? null : _mapper.Map<SaveEnrollmentResponse>(persisted);
         }
     }

@@ -36,7 +36,7 @@ public static class CourseQueries
 
         public async Task<SaveCourseResponse> Handle(GetCourseQuery query, CancellationToken cancellationToken)
         {
-            var persisted = await _dbContext.Courses.FirstOrDefaultAsync(e => e.CourseId == query.CourseId, cancellationToken);
+            var persisted = await _dbContext.Courses.FirstOrDefaultAsync(e => e.Id == query.CourseId, cancellationToken);
             return persisted == null ? null : _mapper.Map<SaveCourseResponse>(persisted);
         }
     }

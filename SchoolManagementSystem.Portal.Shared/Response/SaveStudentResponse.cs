@@ -10,7 +10,6 @@ namespace SchoolManagementSystem.Portal.Shared.Response
     public class SaveStudentResponse
     {
         public Guid StudentId { get; set; } = Guid.NewGuid();
-        public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Email { get; set; }
