@@ -58,7 +58,7 @@ public static class CourseQueries
         {
         }
         public List<SaveStudentResponse> Student { get; set; }
-        public string Key { get; set; } = "AllUsers";
+        public string Key { get; set; } = "AllStudents";
         public int Expiration { get; set; } = 5;
     }
 

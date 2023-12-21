@@ -20,13 +20,6 @@ services:
     networks:
       - backend
 
-  schoolmanagementsystem.notifications.api:
-    image: ${DOCKER_REGISTRY-}schoolmanagementsystem-notifications-api
-    build:
-      context: .
-      dockerfile: SchoolManagementSystem.Notifications.Api/Dockerfile
-    networks:
-      - backend
 
 networks:
    backend:

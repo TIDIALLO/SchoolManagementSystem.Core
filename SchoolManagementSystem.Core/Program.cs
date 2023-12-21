@@ -10,6 +10,7 @@ using Workers;
 using Hangfire;
 using Hangfire.PostgreSql;
 using ConnectLive.Core.Api.Filters;
+using HangfireBasicAuthenticationFilter;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -39,7 +40,7 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(WatchBehavior
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheBehavior<,>));
 
 builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(options => options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("SchoolManagementSystemContext"))));
-builder.Services.AddHangfireServer();
+//builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -59,7 +60,17 @@ app.UseCustomException();
 app.MapControllers();
 app.UseHangfireDashboard("/workers", new DashboardOptions
 {
-    Authorization = new[] { new AuthorizationFilter() }
+    //Authorization = new[] { new AuthorizationFilter() },
+    Authorization = new[] {
+        new HangfireCustomBasicAuthenticationFilter {
+              User = "admin",
+              Pass = "dougeulO!"
+        }
+     },
+    DashboardTitle = "Hangfire Job for SchoolManagementSystem",
+    DarkModeEnabled = false,
+    DisplayStorageConnectionString = false,
+
 });
 
 app.Run();

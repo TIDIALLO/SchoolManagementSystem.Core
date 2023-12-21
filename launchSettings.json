@@ -6,7 +6,8 @@
       "serviceActions": {
         "schoolmanagementsystem.core": "StartDebugging",
         "schoolmanagementsystem.core.api": "StartDebugging",
-        "schoolmanagementsystem.notifications.api": "StartDebugging"
+        "schoolmanagementsystem.notifications.api": "StartDebugging",
+        "schoolmanagementsystem.service.notifications.api": "StartDebugging"
       }
     }
   }
