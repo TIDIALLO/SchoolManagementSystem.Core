@@ -21,9 +21,30 @@ services:
       - backend
 
 
+
+ 
+  schoolmanagementsystem.notification.api:
+    image: ${DOCKER_REGISTRY-}schoolmanagementsystemnotificationapi
+    build:
+      context: .
+      dockerfile: SchoolManagementSystem.Notification.Api/Dockerfile
+    networks:
+      - backend
+
+  schoolmanagementsystem.newsletter.api:
+    image: ${DOCKER_REGISTRY-}schoolmanagementsystem-newsletter-api
+    build:
+      context: .
+      dockerfile: SchoolManagementSystem.Newsletter.Api/Dockerfile
+    networks:
+      - backend
+
 networks:
    backend:
     name: Schoolmanagementsystem-network
 
 volumes:
   data-postgres:
+
+
+

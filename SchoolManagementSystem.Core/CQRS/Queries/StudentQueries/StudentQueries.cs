@@ -82,8 +82,8 @@ public static class CourseQueries
         {
             var students = await _dbContext.Students.ToListAsync(cancellationToken);
             //Background Job.
-            _backgroundJobClient.Enqueue(() => _emailWorker.SendEmail("Email Batch", "######", "Welcome to the website."));
-            _backgroundJobClient.Schedule(() => _emailWorker.SendEmail("Schedule", "*********", "Welcome to the website."), TimeSpan.FromSeconds(10));
+            _backgroundJobClient.Enqueue(() => _emailWorker.SendEmail("Email ", "######", "Welcome to the website."));
+            _backgroundJobClient.Schedule(() => _emailWorker.SendNewsletter("Newsletter", "Newsletter 1 "), TimeSpan.FromSeconds(5));
 
             return _mapper.Map<List<SaveStudentResponse>>(students);
         }

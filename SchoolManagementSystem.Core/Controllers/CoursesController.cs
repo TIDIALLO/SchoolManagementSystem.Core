@@ -64,7 +64,7 @@ public class CoursesController : ControllerBase
     //get courses
     [HttpGet]
     [Route("get-courses")]
-   /* public async Task<ActionResult<IEnumerable<CourseEntity>>> GetCourses()
+/*    public async Task<ActionResult<IEnumerable<CourseEntity>>> GetCourses()
     {
         var result = await _mediator.Send(new CourseQueries.GetCourseQuery());
         return Ok(result);
