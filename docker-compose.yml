@@ -1,6 +1,11 @@
 version: '3.4'
 
 services:
+  seq:
+    image: datalust/seq:latest
+    networks:
+        - backend
+
   schoolmanagementsystem-db:
     image: postgres:15-alpine   
     networks:
@@ -24,7 +29,7 @@ services:
 
  
   schoolmanagementsystem.notification.api:
-    image: ${DOCKER_REGISTRY-}schoolmanagementsystemnotificationapi
+    image: ${DOCKER_REGISTRY-}schoolmanagementsystem-notification-api
     build:
       context: .
       dockerfile: SchoolManagementSystem.Notification.Api/Dockerfile

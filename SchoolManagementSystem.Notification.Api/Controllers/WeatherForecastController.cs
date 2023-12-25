@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagementSystem.Domain.Models;
 
 namespace SchoolManagementSystem.Notification.Api.Controllers
 {
@@ -28,6 +29,14 @@ namespace SchoolManagementSystem.Notification.Api.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet]
+        [Route("notification-count")]
+        public IActionResult GetNotificationCount()
+        {
+            string result = "count is 10";
+            return Ok(new NotificationModel { Data = result });
         }
     }
 }

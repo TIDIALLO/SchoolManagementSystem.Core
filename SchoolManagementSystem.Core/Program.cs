@@ -11,7 +11,12 @@ using Hangfire;
 using Hangfire.PostgreSql;
 using ConnectLive.Core.Api.Filters;
 using HangfireBasicAuthenticationFilter;
-var builder = WebApplication.CreateBuilder(args);
+using SchoolManagementSystem.Proxy;
+using SchoolManagementSystem.Core.Api.Extensions;
+using SchoolManagementSystem.Core.Controllers;
+
+//var builder = WebApplication.CreateBuilder(args);
+var builder = HostExtensions.CreateWebHostBuilder<StudentsController>(args);
 
 // Add services to the container.
 
@@ -27,6 +32,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailWorker, EmailWorker>();
+builder.Services.AddScoped<IProxy, Proxy>();
 
 //builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
 

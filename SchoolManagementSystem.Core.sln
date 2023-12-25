@@ -37,6 +37,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolManagementSystem.Noti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolManagementSystem.Newsletter.Api", "SchoolManagementSystem.Newsletter.Api\SchoolManagementSystem.Newsletter.Api.csproj", "{940A43CA-BEDD-4E4A-BE2E-C8AC86497A0B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Communication", "Communication", "{C3846BA6-678A-40E8-AFD9-BEAC9F22DCB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolManagementSystem.Proxy", "..\SchoolManagementSystem.Proxy\SchoolManagementSystem.Proxy.csproj", "{DB08B338-F2C5-4ED3-A0E6-ABA05D081991}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +87,10 @@ Global
 		{940A43CA-BEDD-4E4A-BE2E-C8AC86497A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{940A43CA-BEDD-4E4A-BE2E-C8AC86497A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{940A43CA-BEDD-4E4A-BE2E-C8AC86497A0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB08B338-F2C5-4ED3-A0E6-ABA05D081991}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB08B338-F2C5-4ED3-A0E6-ABA05D081991}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB08B338-F2C5-4ED3-A0E6-ABA05D081991}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB08B338-F2C5-4ED3-A0E6-ABA05D081991}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +108,8 @@ Global
 		{8B76A9A6-AC2A-4A3C-BAC9-5E81C685B6B2} = {F9CA8D77-2B52-45E1-847C-E12722023325}
 		{A3B4F18D-BB6B-4A8D-8D23-D2912890B122} = {033A4F6C-4E07-4B27-9D78-C85DED6F3E06}
 		{940A43CA-BEDD-4E4A-BE2E-C8AC86497A0B} = {033A4F6C-4E07-4B27-9D78-C85DED6F3E06}
+		{C3846BA6-678A-40E8-AFD9-BEAC9F22DCB2} = {E9D92A73-0390-43C5-9B20-943B3850C9C9}
+		{DB08B338-F2C5-4ED3-A0E6-ABA05D081991} = {C3846BA6-678A-40E8-AFD9-BEAC9F22DCB2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {482F6A52-DA58-4A37-8795-E038B8BEA1F0}

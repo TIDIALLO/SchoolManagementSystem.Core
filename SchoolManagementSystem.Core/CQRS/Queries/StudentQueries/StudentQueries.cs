@@ -7,6 +7,8 @@ using SchoolManagementSystem.Portal.Shared.Request;
 using SchoolManagementSystem.Application.Interfaces;
 using Hangfire;
 using Workers;
+using SchoolManagementSystem.Proxy;
+using SchoolManagementSystem.Domain.Models;
 
 namespace SchoolManagementSystem.Core.Api.cqrs.Queries.StudentQueries;
 
@@ -64,10 +66,13 @@ public static class CourseQueries
 
     public class GetAllStudentQueryHandler : IRequestHandler<GetAllStudentQuery, List<SaveStudentResponse>>
     {
+        private readonly ILogger<GetAllStudentQueryHandler> _logger;
         private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IEmailWorker _emailWorker;
+        private readonly IProxy _proxy;
+        private readonly IConfiguration _configuration;
 
 
         public GetAllStudentQueryHandler(IServiceProvider serviceProvider)
@@ -76,11 +81,23 @@ public static class CourseQueries
             _mapper = serviceProvider.GetRequiredService<IMapper> ();
             _backgroundJobClient = serviceProvider.GetRequiredService<IBackgroundJobClient>();
             _emailWorker = serviceProvider.GetRequiredService<IEmailWorker>();
+             _proxy = serviceProvider.GetRequiredService<IProxy>();
+            _configuration = serviceProvider.GetRequiredService<IConfiguration>();
+
         }
 
         public async Task<List<SaveStudentResponse>> Handle(GetAllStudentQuery query, CancellationToken cancellationToken)
         {
             var students = await _dbContext.Students.ToListAsync(cancellationToken);
+
+            var requestCommand = new RequestCommand
+            {
+                Uri = $"{_configuration["NewletterUri"]}WeatherForecast/notification-count",
+            };
+            var content = await _proxy.Get<NotificationModel>(requestCommand);
+            _logger.LogInformation($"----- result call to {requestCommand.Uri}:{content.Data}");
+
+
             //Background Job.
             _backgroundJobClient.Enqueue(() => _emailWorker.SendEmail("Email ", "######", "Welcome to the website."));
             _backgroundJobClient.Schedule(() => _emailWorker.SendNewsletter("Newsletter", "Newsletter 1 "), TimeSpan.FromSeconds(5));

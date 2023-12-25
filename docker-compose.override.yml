@@ -1,6 +1,13 @@
 version: '3.4'
 
 services:
+  seq:
+    container_name: seq
+    environment:
+     - ACCEPT_EULA=Y
+    ports:
+        - 8001:80
+
   schoolmanagementsystem-db:
     restart: always
     container_name: schoolmanagementsystem-db
