@@ -35,6 +35,7 @@ public static class HostExtensions
            .Enrich.WithProperty("HostName", hostName)
            .Enrich.WithProperty("IP", ipAddress)
            .Enrich.FromLogContext()
+           .WriteTo.Console()
            .WriteTo.Seq(string.IsNullOrWhiteSpace(seqServerUrl) ? "http://seq" : seqServerUrl)
            .ReadFrom.Configuration(configuration)
            .CreateLogger();

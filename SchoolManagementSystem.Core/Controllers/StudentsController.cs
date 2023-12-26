@@ -24,9 +24,6 @@ namespace SchoolManagementSystem.Core.Controllers
         {
             _logger = serviceProvider.GetRequiredService<ILogger<StudentsController>>();
             _mediator = serviceProvider.GetRequiredService<IMediator>();
-            _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-            //  _studentRepository = serviceProvider.GetRequiredService<IStudentRepository>();
-
         }
 
         //#######################    using Mapper and repository   ########################

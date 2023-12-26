@@ -36,18 +36,7 @@ public class EnrollmentsController : ControllerBase
         var result = await _mediator.Send(saveRequest);
 
         return Ok(result);
-        /*   var entity = new EnrollmentEntity
-           {
-               StudentId = request.StudentId,
-               CourseId = request.CourseId,
-               EnrollmentDate = request.EnrollmentDate,
-               Student = request.Student,
-               Course = request.Course,
-           };
-           await _dbContext.Enrollments.AddAsync(entity);
-           await _dbContext.SaveChangesAsync();
 
-           return Ok(request);*/
     }
 
     //get enrollment by Id

@@ -64,11 +64,11 @@ public class CoursesController : ControllerBase
     //get courses
     [HttpGet]
     [Route("get-courses")]
-/*    public async Task<ActionResult<IEnumerable<CourseEntity>>> GetCourses()
+    public async Task<ActionResult<IEnumerable<CourseEntity>>> GetCourses()
     {
-        var result = await _mediator.Send(new CourseQueries.GetCourseQuery());
-        return Ok(result);
-    }*/
+      //  var result = await _mediator.Send(new CourseQueries.GetCourseQuery());
+        return Ok();
+    }
 
 
   
@@ -76,9 +76,9 @@ public class CoursesController : ControllerBase
     //Update Student
     [HttpPut]
     [Route("update-course/{id}")]
- /*   public async Task<IActionResult> UpdateCourse(Guid id, CourseEntity course)
+    public async Task<IActionResult> UpdateCourse(Guid id, CourseEntity course)
     {
-        if (id != course.CourseId)
+        /*if (id != course.CourseId)
         {
             return BadRequest();
         }
@@ -98,9 +98,9 @@ public class CoursesController : ControllerBase
             {
                 throw;
             }
-        }
+        }*/
         return NoContent();
-    }*/
+    }
 
 
     //remove course
