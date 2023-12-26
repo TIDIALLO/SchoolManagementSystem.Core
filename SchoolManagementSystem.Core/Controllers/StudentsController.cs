@@ -26,20 +26,6 @@ namespace SchoolManagementSystem.Core.Controllers
             _mediator = serviceProvider.GetRequiredService<IMediator>();
         }
 
-        //#######################    using Mapper and repository   ########################
-        /*        [HttpPost]
-                public async Task<ActionResult<StudentEntity>> CreateCategory(SaveStudentRequest request)
-                {
-                    var e = _mapper.Map<SaveStudentRequest>(request);
-
-                    await _studentRepository.SaveStudent(request);
-
-                    return CreatedAtAction("GetCategory", new { id = e.id }, e);
-                }*/
-
-        //################################################################################
-
-
         //Save Student
         [HttpPost]
         [Route("save-student")]
@@ -57,23 +43,31 @@ namespace SchoolManagementSystem.Core.Controllers
         [Route("get-student/{id}")]
         public async Task<IActionResult> GetStudentById(Guid id)
         {
-            var result = await _mediator.Send(new CourseQueries.GetStudentQuery(id));
+            var result = await _mediator.Send(new StudentQueries.GetStudentQuery(id));
             if (result == null) return NotFound($"Student with id '{id}' cannot be found!");
             return Ok(result);
           
         }
 
-        //get all students
+        /// <summary>
+        /// get all students
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("get-students")]
         public async Task<ActionResult<IEnumerable<StudentEntity>>> GetAllStudents()
         {
-            var result = await _mediator.Send(new CourseQueries.GetAllStudentQuery());
+            var result = await _mediator.Send(new StudentQueries.GetAllStudentQuery());
             if (result == null) return NotFound("result Not Found");
             return Ok(result);
         }
 
-        //Update Student
+        /// <summary>
+        /// Update Student
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("update-student/{id}")]
         public async Task<IActionResult> UpdateStudent(Guid id, SaveStudentRequest request)
@@ -82,12 +76,16 @@ namespace SchoolManagementSystem.Core.Controllers
             return Ok(result);
         }
 
-        //remove Student
+        /// <summary>
+        /// remove Student
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("remove-student/{id}")]
-        public async Task<IActionResult> DeleteStudent(Guid id, SaveStudentRequest request)
+        public async Task<IActionResult> DeleteStudent(Guid id)
         {
-            var result = await _mediator.Send(new DeleteStudentCommand(request));
+            var result = await _mediator.Send(new DeleteStudentCommand(id));
             if (result == null) return NotFound("result Not Found");
             return Ok(result);
         }

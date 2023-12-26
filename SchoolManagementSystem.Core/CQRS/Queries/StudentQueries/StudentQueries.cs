@@ -12,7 +12,7 @@ using SchoolManagementSystem.Domain.Models;
 
 namespace SchoolManagementSystem.Core.Api.cqrs.Queries.StudentQueries;
 
-public static class CourseQueries
+public static class StudentQueries
 {
     /// <summary>
     /// GetStudent

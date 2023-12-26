@@ -81,13 +81,13 @@ public static class StudentCommands
     #region  DeleteStudent
     public class DeleteStudentCommand : IRequest<SaveStudentResponse>
     {
-        public DeleteStudentCommand(SaveStudentRequest student)
+        public DeleteStudentCommand(Guid id)
         {
-            Student = student;
+            StudentId = id;
         }
-        //public Guid StudentId { get; }
+        public Guid StudentId { get; set; }
 
-        public SaveStudentRequest Student { get; set; }
+        //public SaveStudentRequest Student { get; set; }
 
         public sealed class DeleteStudentCommandHandler : IRequestHandler<DeleteStudentCommand, SaveStudentResponse>
         {
@@ -102,11 +102,19 @@ public static class StudentCommands
 
             public async Task<SaveStudentResponse> Handle(DeleteStudentCommand command, CancellationToken cancellationToken)
             {
-                var entity = _mapper.Map<StudentEntity>(command);
-                await _unitOfWork.Students.RemoveAsync(entity);
-                _unitOfWork.Commit();
-                return _mapper.Map<SaveStudentResponse>(entity); ;
+                try
+                {
+                    var entity = await _unitOfWork.Students.GetByIdAsync(command.StudentId);
+                    await _unitOfWork.Students.RemoveAsync(entity);
+                    _unitOfWork.Commit();
 
+                    return _mapper.Map<SaveStudentResponse>(entity);
+                }
+                catch(NullReferenceException ex) 
+                {
+                    throw new NullReferenceException($"Student not Found {ex.Message}");
+                }
+                 
             }
 
         }

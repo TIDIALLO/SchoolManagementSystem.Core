@@ -43,49 +43,38 @@ public static class CourseCommands
     }
 
     #endregion
-    /*
-        #region  UpdateCourse
-        public class UpdateCourseCommand : IRequest<SaveCourseResponse>
+    
+    #region  UpdateCourse
+    public class UpdateCourseCommand : IRequest<SaveCourseResponse>
+    {
+        public UpdateCourseCommand(SaveCourseRequest Course)
         {
-            public UpdateCourseCommand(SaveCourseRequest Course)
+            Course = Course;
+        }
+
+        public SaveCourseRequest Course { get; set; }
+
+        public sealed class UpdateCourseCommandHandler : IRequestHandler<UpdateCourseCommand, SaveCourseResponse>
+        {
+            private readonly IUnitOfWork _unitOfWork;
+            private readonly IMapper _mapper;
+
+            public UpdateCourseCommandHandler(IServiceProvider serviceProvider)
             {
-                Course = Course;
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
+                _mapper = serviceProvider.GetRequiredService<IMapper>();
             }
 
-            public SaveCourseRequest Course { get; set; }
-
-            public sealed class UpdateCourseCommandHandler : IRequestHandler<UpdateCourseCommand, SaveCourseResponse>
+            public async Task<SaveCourseResponse> Handle(UpdateCourseCommand command, CancellationToken cancellationToken)
             {
-                private readonly ApplicationDbContext _dbContext;
-                private readonly IMapper _mapper;
+                var entity = _mapper.Map<StudentEntity>(command.Course);
+                await _unitOfWork.Students.UpdateAsync(entity);
+                _unitOfWork.Commit();
 
-                public UpdateCourseCommandHandler(IServiceProvider serviceProvider)
-                {
-                    _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                    _mapper = serviceProvider.GetRequiredService<IMapper>();
-                }
-
-                public async Task<SaveCourseResponse> Handle(UpdateCourseCommand command, CancellationToken cancellationToken)
-                {
-                    var entity = _mapper.Map<CourseEntity>(command.Course);
-
-                    // Check if the mapped entity is null
-                    *//*if (entity == null)
-                    {
-                        return null;
-                    }*//*
-
-                    _dbContext.Entry(entity).State = EntityState.Modified;
-
-                    await _dbContext.SaveChangesAsync(cancellationToken);
-
-                    // Map the updated entity back to SaveCourseResponse
-                    var updatedResponse = _mapper.Map<SaveCourseResponse>(entity);
-
-                    return updatedResponse;
-                }
+                return _mapper.Map<SaveCourseResponse>(entity); ;
             }
         }
+    }
 
         #endregion
 
