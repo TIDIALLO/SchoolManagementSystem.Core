@@ -1,0 +1,14 @@
+﻿@SchoolManagementSystem.Core.Api_HostAddress = https://localhost:8081
+
+
+GET {{SchoolManagementSystem.Core.Api_HostAddress}}/api/students/get-students
+
+###
+
+GET {{SchoolManagementSystem.Core.Api_HostAddress}}/api/students/get-students
+
+###
+
+GET {{SchoolManagementSystem.Core.Api_HostAddress}}/api/students/get-students
+
+###

@@ -6,6 +6,7 @@ using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
 using Microsoft.Extensions.DependencyInjection;
 using SchoolManagementSystem.Portal.Shared.Response;
+using static Dapper.SqlMapper;
 
 namespace SchoolManagementSystem.Core.Api.cqrs.Commands.CourseCommands;
 
@@ -43,95 +44,79 @@ public static class CourseCommands
     }
 
     #endregion
-    /*
-        #region  UpdateCourse
-        public class UpdateCourseCommand : IRequest<SaveCourseResponse>
+    
+    #region  UpdateCourse
+    public class UpdateCourseCommand : IRequest<SaveCourseResponse>
+    {
+        public UpdateCourseCommand(SaveCourseRequest Course)
         {
-            public UpdateCourseCommand(SaveCourseRequest Course)
-            {
-                Course = Course;
-            }
-
-            public SaveCourseRequest Course { get; set; }
-
-            public sealed class UpdateCourseCommandHandler : IRequestHandler<UpdateCourseCommand, SaveCourseResponse>
-            {
-                private readonly ApplicationDbContext _dbContext;
-                private readonly IMapper _mapper;
-
-                public UpdateCourseCommandHandler(IServiceProvider serviceProvider)
-                {
-                    _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                    _mapper = serviceProvider.GetRequiredService<IMapper>();
-                }
-
-                public async Task<SaveCourseResponse> Handle(UpdateCourseCommand command, CancellationToken cancellationToken)
-                {
-                    var entity = _mapper.Map<CourseEntity>(command.Course);
-
-                    // Check if the mapped entity is null
-                    *//*if (entity == null)
-                    {
-                        return null;
-                    }*//*
-
-                    _dbContext.Entry(entity).State = EntityState.Modified;
-
-                    await _dbContext.SaveChangesAsync(cancellationToken);
-
-                    // Map the updated entity back to SaveCourseResponse
-                    var updatedResponse = _mapper.Map<SaveCourseResponse>(entity);
-
-                    return updatedResponse;
-                }
-            }
+            Course = Course;
         }
 
-        #endregion
+        public SaveCourseRequest Course { get; set; }
 
-        #region  DeleteCourse
-        public class DeleteCourseCommand : IRequest<SaveCourseResponse>
+        public sealed class UpdateCourseCommandHandler : IRequestHandler<UpdateCourseCommand, SaveCourseResponse>
         {
-            public DeleteCourseCommand(Guid CourseId)
+            private readonly IUnitOfWork _unitOfWork;
+            private readonly IMapper _mapper;
+
+            public UpdateCourseCommandHandler(IServiceProvider serviceProvider)
             {
-                CourseId = CourseId;
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
+                _mapper = serviceProvider.GetRequiredService<IMapper>();
             }
-            public Guid CourseId { get; }
 
-            //public SaveCourseRequest Course { get; set; }
-
-            public sealed class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand, SaveCourseResponse>
+            public async Task<SaveCourseResponse> Handle(UpdateCourseCommand command, CancellationToken cancellationToken)
             {
-                private readonly ApplicationDbContext _dbContext;
-                private readonly IMapper _mapper;
+                var entity = _mapper.Map<CourseEntity>(command.Course);
+                await _unitOfWork.Courses.UpdateAsync(entity);
+                _unitOfWork.Commit();
 
-                public DeleteCourseCommandHandler(IServiceProvider serviceProvider)
+                return _mapper.Map<SaveCourseResponse>(entity); ;
+            }
+        }
+    }
+
+    #endregion
+
+    #region  DeleteCourse
+    public class DeleteCourseCommand : IRequest<SaveCourseResponse>
+    {
+        public DeleteCourseCommand(Guid id)
+        {
+            CourseId = id;
+        }
+        public Guid CourseId { get; set; }
+        public sealed class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand, SaveCourseResponse>
+        {
+            private readonly IUnitOfWork _unitOfWork;
+            private readonly IMapper _mapper;
+
+            public DeleteCourseCommandHandler(IServiceProvider serviceProvider)
+            {
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
+                _mapper = serviceProvider.GetRequiredService<IMapper>();
+            }
+
+            public async Task<SaveCourseResponse> Handle(DeleteCourseCommand command, CancellationToken cancellationToken)
+            {
+                try
                 {
-                    _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                    _mapper = serviceProvider.GetRequiredService<IMapper>();
+                    var entity = await _unitOfWork.Courses.GetByIdAsync(command.CourseId);
+                    await _unitOfWork.Courses.RemoveAsync(entity);
+                    _unitOfWork.Commit();
+
+                    return _mapper.Map<SaveCourseResponse>(entity);
                 }
-
-                public async Task<SaveCourseResponse> Handle(DeleteCourseCommand command, CancellationToken cancellationToken)
+                catch (NullReferenceException ex)
                 {
-
-                    var courseToRemove = await _dbContext.Courses.FindAsync(command.CourseId);
-
-                    if (courseToRemove == null)
-                    {
-                        return null;
-                    }
-
-                    var deletedResponse = _mapper.Map<SaveCourseResponse>(courseToRemove);
-
-                    _dbContext.Courses.Remove(courseToRemove);
-                    await _dbContext.SaveChangesAsync();
-
-                    return deletedResponse;
+                    throw new NullReferenceException($"Course not Found {ex.Message}");
                 }
 
             }
 
         }
 
-        #endregion*/
+    }
+    #endregion
 }

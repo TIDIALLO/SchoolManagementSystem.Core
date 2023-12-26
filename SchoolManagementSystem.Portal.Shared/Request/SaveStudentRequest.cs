@@ -3,7 +3,7 @@ namespace SchoolManagementSystem.Portal.Shared.Request
 {
     public class SaveStudentRequest
     {
-        public Guid StudentId { get; set; } = Guid.NewGuid();
+        //public Guid StudentId { get; set; } 
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
