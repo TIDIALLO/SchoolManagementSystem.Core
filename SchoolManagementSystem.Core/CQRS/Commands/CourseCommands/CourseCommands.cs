@@ -6,6 +6,7 @@ using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
 using Microsoft.Extensions.DependencyInjection;
 using SchoolManagementSystem.Portal.Shared.Response;
+using static Dapper.SqlMapper;
 
 namespace SchoolManagementSystem.Core.Api.cqrs.Commands.CourseCommands;
 
@@ -67,8 +68,8 @@ public static class CourseCommands
 
             public async Task<SaveCourseResponse> Handle(UpdateCourseCommand command, CancellationToken cancellationToken)
             {
-                var entity = _mapper.Map<StudentEntity>(command.Course);
-                await _unitOfWork.Students.UpdateAsync(entity);
+                var entity = _mapper.Map<CourseEntity>(command.Course);
+                await _unitOfWork.Courses.UpdateAsync(entity);
                 _unitOfWork.Commit();
 
                 return _mapper.Map<SaveCourseResponse>(entity); ;
@@ -76,51 +77,46 @@ public static class CourseCommands
         }
     }
 
-        #endregion
+    #endregion
 
-        #region  DeleteCourse
-        public class DeleteCourseCommand : IRequest<SaveCourseResponse>
+    #region  DeleteCourse
+    public class DeleteCourseCommand : IRequest<SaveCourseResponse>
+    {
+        public DeleteCourseCommand(Guid id)
         {
-            public DeleteCourseCommand(Guid CourseId)
+            CourseId = id;
+        }
+        public Guid CourseId { get; set; }
+        public sealed class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand, SaveCourseResponse>
+        {
+            private readonly IUnitOfWork _unitOfWork;
+            private readonly IMapper _mapper;
+
+            public DeleteCourseCommandHandler(IServiceProvider serviceProvider)
             {
-                CourseId = CourseId;
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
+                _mapper = serviceProvider.GetRequiredService<IMapper>();
             }
-            public Guid CourseId { get; }
 
-            //public SaveCourseRequest Course { get; set; }
-
-            public sealed class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand, SaveCourseResponse>
+            public async Task<SaveCourseResponse> Handle(DeleteCourseCommand command, CancellationToken cancellationToken)
             {
-                private readonly ApplicationDbContext _dbContext;
-                private readonly IMapper _mapper;
-
-                public DeleteCourseCommandHandler(IServiceProvider serviceProvider)
+                try
                 {
-                    _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                    _mapper = serviceProvider.GetRequiredService<IMapper>();
+                    var entity = await _unitOfWork.Courses.GetByIdAsync(command.CourseId);
+                    await _unitOfWork.Courses.RemoveAsync(entity);
+                    _unitOfWork.Commit();
+
+                    return _mapper.Map<SaveCourseResponse>(entity);
                 }
-
-                public async Task<SaveCourseResponse> Handle(DeleteCourseCommand command, CancellationToken cancellationToken)
+                catch (NullReferenceException ex)
                 {
-
-                    var courseToRemove = await _dbContext.Courses.FindAsync(command.CourseId);
-
-                    if (courseToRemove == null)
-                    {
-                        return null;
-                    }
-
-                    var deletedResponse = _mapper.Map<SaveCourseResponse>(courseToRemove);
-
-                    _dbContext.Courses.Remove(courseToRemove);
-                    await _dbContext.SaveChangesAsync();
-
-                    return deletedResponse;
+                    throw new NullReferenceException($"Course not Found {ex.Message}");
                 }
 
             }
 
         }
 
-        #endregion*/
+    }
+    #endregion
 }
