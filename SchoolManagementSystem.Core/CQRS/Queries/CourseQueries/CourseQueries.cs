@@ -15,9 +15,9 @@ public static class CourseQueries
     #region GetCourse
     public class GetCourseQuery : IRequest<SaveCourseResponse>
     {
-        public GetCourseQuery(Guid CourseId)
+        public GetCourseQuery(Guid id)
         {
-            CourseId = CourseId;
+            CourseId = id;
         }
 
         public Guid CourseId { get; set; }
@@ -58,20 +58,23 @@ public static class CourseQueries
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
         public GetAllCourseQueryHandler(IServiceProvider serviceProvider)
         {
             _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-            _mapper = serviceProvider.GetRequiredService<IMapper> ();
+            _mapper = serviceProvider.GetRequiredService<IMapper>();
+            _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
         }
 
         public async Task<List<SaveCourseResponse>> Handle(GetAllCourseQuery query, CancellationToken cancellationToken)
         {
-            MemoryStream memoryStream = null;
-            var position = memoryStream.Position;
+            // MemoryStream memoryStream = null;
+            //var position = memoryStream.Position;
 
-            var courses = await _dbContext.Courses.ToListAsync(cancellationToken);
-            return  _mapper.Map<List<SaveCourseResponse>>(courses);
+            //var courses = await _dbContext.Courses.ToListAsync(cancellationToken);
+            var result = _unitOfWork.Courses.GetAll();
+            return  _mapper.Map<List<SaveCourseResponse>>(result);
         }
     }
 

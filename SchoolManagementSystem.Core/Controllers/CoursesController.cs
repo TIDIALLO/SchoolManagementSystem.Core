@@ -1,10 +1,7 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Core.Api.cqrs.Queries.CourseQueries;
 using SchoolManagementSystem.Core.Api.cqrs.Queries.StudentQueries;
-using SchoolManagementSystem.DAL;
 using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
 using static SchoolManagementSystem.Core.Api.cqrs.Commands.CourseCommands.CourseCommands;
@@ -17,14 +14,12 @@ namespace SchoolManagementSystem.Core.Controllers;
 public class CoursesController : ControllerBase
 {
     public readonly ILogger<CoursesController> _logger;
-    private readonly ApplicationDbContext _dbContext;
     private readonly IMediator _mediator;
 
     public CoursesController(IServiceProvider serviceProvider)
     {
         _logger = serviceProvider.GetRequiredService<ILogger<CoursesController>>();
         _mediator = serviceProvider.GetRequiredService<IMediator>();
-        _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
     }
 
     //Save courses
@@ -58,7 +53,7 @@ public class CoursesController : ControllerBase
     [Route("get-courses")]
     public async Task<ActionResult<IEnumerable<CourseEntity>>> GetCourses()
     {
-        var result = await _mediator.Send(new StudentQueries.GetAllStudentQuery());
+        var result = await _mediator.Send(new CourseQueries.GetAllCourseQuery());
         if (result == null) return NotFound("result Not Found");
         return Ok(result);
     }
@@ -90,15 +85,9 @@ public class CoursesController : ControllerBase
     [Route("remove-course/{id}")]
     public async Task<IActionResult> DeleteCourse(Guid id)
     {
-        var course = await _dbContext.Courses.FindAsync(id);
-        if (course == null)
-        {
-            return NotFound();
-        }
-        _dbContext.Courses.Remove(course);
-        await _dbContext.SaveChangesAsync();
-
-        return Ok(course);
+        var result = await _mediator.Send(new DeleteCourseCommand(id));
+        if (result == null) return NotFound("result Not Found");
+        return Ok(result);
     }
 
 }

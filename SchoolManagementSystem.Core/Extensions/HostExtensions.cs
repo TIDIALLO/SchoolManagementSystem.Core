@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using MassTransit;
+using Serilog;
 using System.Net;
 
 namespace SchoolManagementSystem.Core.Api.Extensions;
@@ -41,5 +42,36 @@ public static class HostExtensions
            .CreateLogger();
 
         return builder;
+    }
+
+    public static IServiceCollection AddBusRegistration(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHealthChecks();
+        services.AddMassTransit(x =>
+        {
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(configuration["EventBusConnection"], "/", h =>
+                {
+                    h.Username(configuration["username"]);
+                    h.Password(configuration["password"]);
+                });
+            });
+        });     
+        return services;
+    }
+
+    public static IBusControl Configure(IConfiguration configuration, Action<IRabbitMqBatchPublishConfigurator> registrationAction = null)
+    {
+        var connection = configuration["EventBusConnection"];
+
+        return Bus.Factory.CreateUsingRabbitMq(cfg =>
+        {
+            cfg.Host(connection, h =>
+            {
+                h.Username(configuration["username"]);
+                h.Password(configuration["password"]);
+            });
+        });
     }
 }

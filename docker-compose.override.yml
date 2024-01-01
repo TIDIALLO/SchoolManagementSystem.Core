@@ -8,6 +8,11 @@ services:
     ports:
         - 8001:80
 
+  rabbitmq:
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
   schoolmanagementsystem-db:
     restart: always
     container_name: schoolmanagementsystem-db
@@ -33,6 +38,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - EventBusUsername=user
+      - EventBusPassword=password
+      - EventBusConnection=rabbitmq://rabbitmq:5672
     ports:
       - 8080:8080
       - 8081:8081
@@ -56,6 +64,7 @@ services:
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
   schoolmanagementsystem.newsletter.api:
+    container_name: schoolmanagementsystem-newsletter-api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080

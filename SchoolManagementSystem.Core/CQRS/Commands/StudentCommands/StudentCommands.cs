@@ -6,16 +6,18 @@ using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
 using Microsoft.Extensions.DependencyInjection;
 using SchoolManagementSystem.Portal.Shared.Response;
+using SchoolManagementSystem.Application;
 
 namespace SchoolManagementSystem.Core.Api.cqrs.Commands.StudentCommands;
 
 public static class StudentCommands
 {
     #region SaveStudent
-    public class SaveStudentCommand : IRequest<SaveStudentResponse>
+    public class SaveStudentCommand : IntegrationEvent, IRequest<SaveStudentResponse>
     {
         public SaveStudentCommand(SaveStudentRequest student) => Student = student;
         public SaveStudentRequest Student { get; set; }
+       // public Guid EventId { get ; set ; }
     }
 
     public sealed class SaveStudentCommandHandler : IRequestHandler<SaveStudentCommand, SaveStudentResponse>
@@ -86,8 +88,6 @@ public static class StudentCommands
             StudentId = id;
         }
         public Guid StudentId { get; set; }
-
-        //public SaveStudentRequest Student { get; set; }
 
         public sealed class DeleteStudentCommandHandler : IRequestHandler<DeleteStudentCommand, SaveStudentResponse>
         {

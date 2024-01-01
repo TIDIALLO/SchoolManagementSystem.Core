@@ -5,6 +5,13 @@ services:
     image: datalust/seq:latest
     networks:
         - backend
+        
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+    networks:
+       - backend
 
   schoolmanagementsystem-db:
     image: postgres:15-alpine   

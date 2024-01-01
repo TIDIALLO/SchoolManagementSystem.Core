@@ -18,7 +18,7 @@ public class EnrollmentEntity: IEntity
     [Column("enrollmentdate")]
     public DateTime EnrollmentDate { get; set; }
     [Column("student")]
-    public StudentEntity Student { get; set; }
+    public StudentEntity? Student { get; set; }
     [Column("course")]
-    public CourseEntity Course { get; set; }
+    public CourseEntity? Course { get; set; }
 }

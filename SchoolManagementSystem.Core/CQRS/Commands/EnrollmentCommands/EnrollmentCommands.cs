@@ -22,11 +22,12 @@ public static class EnrollmentCommands
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
-
+        private readonly ILogger _logger;
         public SaveEnrollmentCommandHandler(IServiceProvider serviceProvider)
         {
             _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
             _mapper = serviceProvider.GetRequiredService<IMapper>();
+            _logger = serviceProvider.GetRequiredService<ILogger>();   
         }
 
         public async Task<SaveEnrollmentResponse> Handle(SaveEnrollmentCommand command, CancellationToken cancellationToken)
@@ -43,111 +44,83 @@ public static class EnrollmentCommands
     }
 
     #endregion
-    /*
-     #region  UpdateEnrollment
-     public class UpdateEnrollmentCommand : IRequest<SaveEnrollmentResponse>
-     {
-         public UpdateEnrollmentCommand(SaveEnrollmentRequest enrollment)
-         {
-             Enrollment = enrollment;
-         }
 
-         public SaveEnrollmentRequest Enrollment { get; set; }
+    #region  UpdateEnrollment
+    public class UpdateEnrollmentCommand : IRequest<SaveEnrollmentResponse>
+    {
+        public UpdateEnrollmentCommand(SaveEnrollmentRequest Enrollment)
+        {
+            Enrollment = Enrollment;
+        }
 
-         public sealed class UpdateEnrollmentCommandHandler : IRequestHandler<UpdateEnrollmentCommand, SaveEnrollmentResponse>
-         {
-             private readonly ApplicationDbContext _dbContext;
-             private readonly IMapper _mapper;
+        public SaveEnrollmentRequest Enrollment { get; set; }
 
-             public UpdateEnrollmentCommandHandler(IServiceProvider serviceProvider)
-             {
-                 _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                 _mapper = serviceProvider.GetRequiredService<IMapper>();
-             }
+        public sealed class UpdateEnrollmentCommandHandler : IRequestHandler<UpdateEnrollmentCommand, SaveEnrollmentResponse>
+        {
+            private readonly IUnitOfWork _unitOfWork;
+            private readonly IMapper _mapper;
 
-             public async Task<SaveEnrollmentResponse> Handle(UpdateEnrollmentCommand command, CancellationToken cancellationToken)
-             {
-                 var entity = _mapper.Map<EnrollmentEntity>(command.Enrollment);
+            public UpdateEnrollmentCommandHandler(IServiceProvider serviceProvider)
+            {
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
+                _mapper = serviceProvider.GetRequiredService<IMapper>();
+            }
 
-                 // Check if the mapped entity is null
-                 if (entity == null)
-                 {
-                     return null;
-                 }
+            public async Task<SaveEnrollmentResponse> Handle(UpdateEnrollmentCommand command, CancellationToken cancellationToken)
+            {
+                var entity = _mapper.Map<EnrollmentEntity>(command.Enrollment);
+                await _unitOfWork.Enrollments.UpdateAsync(entity);
+                _unitOfWork.Commit();
 
-                 _dbContext.Entry(entity).State = EntityState.Modified;
+                return _mapper.Map<SaveEnrollmentResponse>(entity); ;
+            }
+        }
+    }
+    #endregion
 
-                 await _dbContext.SaveChangesAsync(cancellationToken);
+    #region  DeleteEnrollment
+    public class DeleteEnrollmentCommand : IRequest<SaveEnrollmentResponse>
+    {
+        public DeleteEnrollmentCommand(Guid id)
+        {
+            EnrollmentId = id;
+        }
+        public Guid EnrollmentId { get; set; }
 
-                 // Map the updated entity back to SaveEnrollmentResponse
-                 var updatedResponse = _mapper.Map<SaveEnrollmentResponse>(entity);
+        public sealed class DeleteEnrollmentCommandHandler : IRequestHandler<DeleteEnrollmentCommand, SaveEnrollmentResponse>
+        {
+            private readonly IUnitOfWork _unitOfWork;
+            private readonly IMapper _mapper;
+            private readonly ILogger _logger;
 
-                 return updatedResponse;
-             }
-         }
-     }
+            public DeleteEnrollmentCommandHandler(IServiceProvider serviceProvider)
+            {
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
+                _mapper = serviceProvider.GetRequiredService<IMapper>();
+                _logger = serviceProvider.GetRequiredService<ILogger>();
 
-     #endregion
+            }
 
-     #region  DeleteEnrollment
-     public class DeleteEnrollmentCommand : IRequest<SaveEnrollmentResponse>
-     {
-         public DeleteEnrollmentCommand(Guid enrollmentId)
-         {
-             EnrollmentId = enrollmentId;
-         }
-         public Guid EnrollmentId { get; }
+            public async Task<SaveEnrollmentResponse> Handle(DeleteEnrollmentCommand command, CancellationToken cancellationToken)
+            {
+                try
+                {
+                    var entity = await _unitOfWork.Enrollments.GetByIdAsync(command.EnrollmentId);
+                    await _unitOfWork.Enrollments.RemoveAsync(entity);
+                    _unitOfWork.Commit();
 
-         //public SaveEnrollmentRequest Enrollment { get; set; }
+                    return _mapper.Map<SaveEnrollmentResponse>(entity);
+                }
+                catch (NullReferenceException ex)
+                {
+                    _logger.LogInformation($"Enrollment not Found {ex.Message}");
+                    throw new NullReferenceException($"Enrollment not Found {ex.Message}");
+                }
 
-         public sealed class DeleteEnrollmentCommandHandler : IRequestHandler<DeleteEnrollmentCommand, SaveEnrollmentResponse>
-         {
-             private readonly ApplicationDbContext _dbContext;
-             private readonly IMapper _mapper;
+            }
 
-             public DeleteEnrollmentCommandHandler(IServiceProvider serviceProvider)
-             {
-                 _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                 _mapper = serviceProvider.GetRequiredService<IMapper>();
-             }
+        }
 
-             public async Task<SaveEnrollmentResponse> Handle(DeleteEnrollmentCommand command, CancellationToken cancellationToken)
-             {
-
-                 var enrollmentToRemove = await _dbContext.Enrollments.FindAsync(command.EnrollmentId);
-
-                 if (enrollmentToRemove == null)
-                 {
-                     return null;
-                 }
-
-                 var deletedResponse = _mapper.Map<SaveEnrollmentResponse>(enrollmentToRemove);
-
-                 _dbContext.Enrollments.Remove(enrollmentToRemove);
-                 await _dbContext.SaveChangesAsync();
-
-                 return deletedResponse;
-             }
-
-             *//*                var entity = _mapper.Map<EnrollmentEntity>(command.Enrollment);
-
-                             // Check if the mapped entity is null
-                             if (entity == null)
-                             {
-                                 return null;
-                             }
-
-                             _dbContext.Entry(entity).State = EntityState.Modified;
-
-                             await _dbContext.SaveChangesAsync(cancellationToken);
-
-                             // Map the updated entity back to SaveEnrollmentResponse
-                             var updatedResponse = _mapper.Map<SaveEnrollmentResponse>(entity);
-
-                             return updatedResponse;*//*
-         }
-
-     }
-
-     #endregion*/
+    }
+    #endregion
 }

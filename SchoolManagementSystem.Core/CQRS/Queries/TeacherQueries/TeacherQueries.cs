@@ -58,17 +58,22 @@ public static class TeacherQueries
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
+        //private readonly IUnitOfWork _unitOfWork;
+
 
         public GetAllTeacherQueryHandler(IServiceProvider serviceProvider)
         {
             _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
             _mapper = serviceProvider.GetRequiredService<IMapper> ();
+            //_unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
+
         }
 
         public async Task<List<SaveTeacherResponse>> Handle(GetAllTeacherQuery query, CancellationToken cancellationToken)
         {
             var teachers = await _dbContext.Teacher.ToListAsync(cancellationToken);
             return _mapper.Map<List<SaveTeacherResponse>>(teachers);
+     
         }
     }
 

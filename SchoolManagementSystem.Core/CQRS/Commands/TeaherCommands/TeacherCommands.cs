@@ -56,37 +56,25 @@ public static class TeacherCommands
 
         public sealed class UpdateTeacherCommandHandler : IRequestHandler<UpdateTeacherCommand, SaveTeacherResponse>
         {
-            private readonly ApplicationDbContext _dbContext;
+            private readonly IUnitOfWork _unitOfWork;
             private readonly IMapper _mapper;
 
             public UpdateTeacherCommandHandler(IServiceProvider serviceProvider)
             {
-                _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
                 _mapper = serviceProvider.GetRequiredService<IMapper>();
             }
 
             public async Task<SaveTeacherResponse> Handle(UpdateTeacherCommand command, CancellationToken cancellationToken)
             {
                 var entity = _mapper.Map<TeacherEntity>(command.Teacher);
+                await _unitOfWork.Teachers.UpdateAsync(entity);
+                _unitOfWork.Commit();
 
-                // Check if the mapped entity is null
-                if (entity == null)
-                {
-                    return null;
-                }
-
-                _dbContext.Entry(entity).State = EntityState.Modified;
-
-                await _dbContext.SaveChangesAsync(cancellationToken);
-
-                // Map the updated entity back to SaveTeacherResponse
-                var updatedResponse = _mapper.Map<SaveTeacherResponse>(entity);
-
-                return updatedResponse;
+                return _mapper.Map<SaveTeacherResponse>(entity); ;
             }
         }
     }
-
     #endregion
 
     #region  DeleteTeacher

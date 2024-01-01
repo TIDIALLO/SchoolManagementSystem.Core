@@ -68,8 +68,8 @@ public static class EnrollmentQueries
 
         public async Task<List<SaveEnrollmentResponse>> Handle(GetAllEnrollmentQuery query, CancellationToken cancellationToken)
         {
-            MemoryStream memoryStream = null;
-            var position = memoryStream.Position;
+            //MemoryStream memoryStream = null;
+            //var position = memoryStream.Position;
 
             var result = await _dbContext.Enrollments.ToListAsync(cancellationToken);
             return result == null ? null : _mapper.Map<List<SaveEnrollmentResponse>>(result);

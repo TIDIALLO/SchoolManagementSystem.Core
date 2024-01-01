@@ -9,6 +9,7 @@ using Hangfire;
 using Workers;
 using SchoolManagementSystem.Proxy;
 using SchoolManagementSystem.Domain.Models;
+using SchoolManagementSystem.Application;
 
 namespace SchoolManagementSystem.Core.Api.cqrs.Queries.StudentQueries;
 
@@ -18,13 +19,16 @@ public static class StudentQueries
     /// GetStudent
     /// </summary>
     #region GetStudent
-    public class GetStudentQuery : IRequest<SaveStudentResponse> , ICachable<SaveStudentResponse>
+    public class GetStudentQuery : IntegrationEvent, IRequest<SaveStudentResponse> , ICachable<SaveStudentResponse>
     {
         public GetStudentQuery(Guid studentId)
         {
             StudentId = studentId;
             Key = studentId.ToString();
         }
+
+      
+
 
         public Guid StudentId { get; set; }
         public string Key { get; set; }
@@ -54,11 +58,17 @@ public static class StudentQueries
     /// GetAllStudents
     /// </summary>
     #region GetAllStudents
-    public class GetAllStudentQuery : IRequest<List<SaveStudentResponse>>, ICachable<List<SaveStudentResponse>>
+    public class GetAllStudentQuery : IntegrationEvent, IRequest<List<SaveStudentResponse>>, ICachable<List<SaveStudentResponse>>
     {
         public GetAllStudentQuery()
         {
         }
+
+        public GetAllStudentQuery(Guid eventId) : base(eventId)
+        {
+        }
+
+
         public List<SaveStudentResponse> Student { get; set; }
         public string Key { get; set; } = "AllStudents";
         public int Expiration { get; set; } = 5;
@@ -83,12 +93,12 @@ public static class StudentQueries
             _emailWorker = serviceProvider.GetRequiredService<IEmailWorker>();
              _proxy = serviceProvider.GetRequiredService<IProxy>();
             _configuration = serviceProvider.GetRequiredService<IConfiguration>();
-
+            _logger = serviceProvider.GetRequiredService<ILogger<GetAllStudentQueryHandler>>();
         }
 
         public async Task<List<SaveStudentResponse>> Handle(GetAllStudentQuery query, CancellationToken cancellationToken)
         {
-            var students = await _dbContext.Students.ToListAsync(cancellationToken);
+            var result = await _dbContext.Students.ToListAsync(cancellationToken);
 
             var requestCommand = new RequestCommand
             {
@@ -100,9 +110,11 @@ public static class StudentQueries
 
             //Background Job.
             _backgroundJobClient.Enqueue(() => _emailWorker.SendEmail("Email ", "######", "Welcome to the website."));
-            _backgroundJobClient.Schedule(() => _emailWorker.SendNewsletter("Newsletter", "Newsletter 1 "), TimeSpan.FromSeconds(5));
+            _backgroundJobClient.Schedule(() => _emailWorker.SendNewsletter("Newsletter", "******** Newsletter 1 *******"), TimeSpan.FromSeconds(5));
 
-            return _mapper.Map<List<SaveStudentResponse>>(students);
+            return result == null ? null : _mapper.Map<List<SaveStudentResponse>>(result);
+
+            //return _mapper.Map<List<SaveStudentResponse>>(students);
         }
     }
 

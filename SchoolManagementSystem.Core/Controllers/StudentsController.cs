@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Core.Api.cqrs.Queries.StudentQueries;
 
 
@@ -16,9 +15,7 @@ namespace SchoolManagementSystem.Core.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ApplicationDbContext _dbContext;
         private readonly ILogger<StudentsController> _logger;
-        // private readonly IStudentRepository _studentRepository;
 
         public StudentsController(IServiceProvider serviceProvider) 
         {
@@ -26,7 +23,11 @@ namespace SchoolManagementSystem.Core.Controllers
             _mediator = serviceProvider.GetRequiredService<IMediator>();
         }
 
-        //Save Student
+        /// <summary>
+        /// Save Student
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("save-student")]
         public async Task<IActionResult> SaveStudent(SaveStudentRequest request)
@@ -38,7 +39,11 @@ namespace SchoolManagementSystem.Core.Controllers
         }
 
 
-        //get Student by Id
+        /// <summary>
+        /// get Student by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("get-student/{id}")]
         public async Task<IActionResult> GetStudentById(Guid id)
