@@ -56,82 +56,68 @@ public static class TeacherCommands
 
         public sealed class UpdateTeacherCommandHandler : IRequestHandler<UpdateTeacherCommand, SaveTeacherResponse>
         {
-            private readonly ApplicationDbContext _dbContext;
+            private readonly IUnitOfWork _unitOfWork;
             private readonly IMapper _mapper;
 
             public UpdateTeacherCommandHandler(IServiceProvider serviceProvider)
             {
-                _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
                 _mapper = serviceProvider.GetRequiredService<IMapper>();
             }
 
             public async Task<SaveTeacherResponse> Handle(UpdateTeacherCommand command, CancellationToken cancellationToken)
             {
                 var entity = _mapper.Map<TeacherEntity>(command.Teacher);
+                await _unitOfWork.Teachers.UpdateAsync(entity);
+                _unitOfWork.Commit();
 
-                // Check if the mapped entity is null
-                if (entity == null)
-                {
-                    return null;
-                }
-
-                _dbContext.Entry(entity).State = EntityState.Modified;
-
-                await _dbContext.SaveChangesAsync(cancellationToken);
-
-                // Map the updated entity back to SaveTeacherResponse
-                var updatedResponse = _mapper.Map<SaveTeacherResponse>(entity);
-
-                return updatedResponse;
+                return _mapper.Map<SaveTeacherResponse>(entity); ;
             }
         }
     }
-
     #endregion
-    
+
     #region  DeleteTeacher
     public class DeleteTeacherCommand : IRequest<SaveTeacherResponse>
     {
-        public DeleteTeacherCommand(Guid teacherId)
+        public DeleteTeacherCommand(Guid id)
         {
-            TeacherId = teacherId;
+            TeacherId = id;
         }
-        public Guid TeacherId { get; }
+        public Guid TeacherId { get; set; }
 
         //public SaveTeacherRequest Teacher { get; set; }
 
         public sealed class DeleteTeacherCommandHandler : IRequestHandler<DeleteTeacherCommand, SaveTeacherResponse>
         {
-            private readonly ApplicationDbContext _dbContext;
+            private readonly IUnitOfWork _unitOfWork;
             private readonly IMapper _mapper;
 
             public DeleteTeacherCommandHandler(IServiceProvider serviceProvider)
             {
-                _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                _unitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
                 _mapper = serviceProvider.GetRequiredService<IMapper>();
             }
 
             public async Task<SaveTeacherResponse> Handle(DeleteTeacherCommand command, CancellationToken cancellationToken)
             {
-                
-                var teacherToRemove = await _dbContext.Teacher.FindAsync(command.TeacherId);
-
-                if (teacherToRemove == null)
+                try
                 {
-                    return null;
+                    var entity = await _unitOfWork.Teachers.GetByIdAsync(command.TeacherId);
+                    await _unitOfWork.Teachers.RemoveAsync(entity);
+                    _unitOfWork.Commit();
+
+                    return _mapper.Map<SaveTeacherResponse>(entity);
+                }
+                catch (NullReferenceException ex)
+                {
+                    throw new NullReferenceException($"Teacher not Found {ex.Message}");
                 }
 
-                var deletedResponse = _mapper.Map<SaveTeacherResponse>(teacherToRemove);
-
-                _dbContext.Teacher.Remove(teacherToRemove);
-                await _dbContext.SaveChangesAsync();
-
-                return deletedResponse;
             }
 
-            }
+        }
 
     }
-
     #endregion
 }

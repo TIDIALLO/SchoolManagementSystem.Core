@@ -1,4 +1,4 @@
-namespace SchoolManagementSystem.Notifications.Api
+namespace SchoolManagementSystem.Newsletter.Api
 {
     public class WeatherForecast
     {

@@ -22,6 +22,7 @@ public class GenericRepository<TEntity>(ApplicationDbContext dbContext) : IGener
     {
         await Task.CompletedTask;
         if (_dbContext.Entry(entity).State == EntityState.Detached) _dbContext.Attach(entity);
+        _dbContext.Entry(entity).State = EntityState.Deleted;
         _dbContext.Set<TEntity>().Remove(entity);
         return true;
     }
@@ -35,7 +36,7 @@ public class GenericRepository<TEntity>(ApplicationDbContext dbContext) : IGener
 
     public async Task UpdateAsync(TEntity entity)
     {
-       // await Task.CompletedTask;
+        // await Task.CompletedTask;
         var st = await _dbContext.Set<TEntity>().FindAsync(entity.Id);
         if (st != null)
         {

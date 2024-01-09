@@ -1,6 +1,18 @@
 version: '3.4'
 
 services:
+  seq:
+    image: datalust/seq:latest
+    networks:
+        - backend
+        
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+    networks:
+       - backend
+
   schoolmanagementsystem-db:
     image: postgres:15-alpine   
     networks:
@@ -21,9 +33,30 @@ services:
       - backend
 
 
+
+ 
+  schoolmanagementsystem.notification.api:
+    image: ${DOCKER_REGISTRY-}schoolmanagementsystem-notification-api
+    build:
+      context: .
+      dockerfile: SchoolManagementSystem.Notification.Api/Dockerfile
+    networks:
+      - backend
+
+  schoolmanagementsystem.newsletter.api:
+    image: ${DOCKER_REGISTRY-}schoolmanagementsystem-newsletter-api
+    build:
+      context: .
+      dockerfile: SchoolManagementSystem.Newsletter.Api/Dockerfile
+    networks:
+      - backend
+
 networks:
    backend:
     name: Schoolmanagementsystem-network
 
 volumes:
   data-postgres:
+
+
+

@@ -1,6 +1,18 @@
 version: '3.4'
 
 services:
+  seq:
+    container_name: seq
+    environment:
+     - ACCEPT_EULA=Y
+    ports:
+        - 8001:80
+
+  rabbitmq:
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
   schoolmanagementsystem-db:
     restart: always
     container_name: schoolmanagementsystem-db
@@ -26,6 +38,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - EventBusUsername=user
+      - EventBusPassword=password
+      - EventBusConnection=rabbitmq://rabbitmq:5672
     ports:
       - 8080:8080
       - 8081:8081
@@ -33,3 +48,30 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
+
+
+  schoolmanagementsystem.notification.api:
+    container_name: schoolmanagementsystem-notification-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+      - "8080"
+      - "8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+
+  schoolmanagementsystem.newsletter.api:
+    container_name: schoolmanagementsystem-newsletter-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+      - "8080"
+      - "8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro

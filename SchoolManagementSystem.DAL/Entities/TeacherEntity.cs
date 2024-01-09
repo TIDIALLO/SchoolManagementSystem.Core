@@ -15,11 +15,11 @@ public class TeacherEntity:IEntity
     [Column("id")]
     public Guid Id { get; set; }
     [Column("firstname")]
-    public string FirstName { get; set; }
+    public string? FirstName { get; set; }
     [Column("lastname")]
-    public string LastName { get; set; }
+    public string? LastName { get; set; }
     [Column("subject")]
-    public string Subject { get; set; }
+    public string? Subject { get; set; }
     [Column("email")]
     public string Email { get; set; }
 

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace SchoolManagementSystem.Notifications.Api.Controllers
+namespace SchoolManagementSystem.Newsletter.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
