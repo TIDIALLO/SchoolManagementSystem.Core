@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SchoolManagementSystem.DAL;
@@ -12,9 +13,11 @@ using SchoolManagementSystem.DAL;
 namespace SchoolManagementSystem.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240103134940_QuestionMigration")]
+    partial class QuestionMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,11 +68,16 @@ namespace SchoolManagementSystem.DAL.Migrations
                         .HasColumnType("text")
                         .HasColumnName("firstname");
 
+                    b.Property<Guid?>("TeacherEntityId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Title")
                         .HasColumnType("text")
                         .HasColumnName("title");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TeacherEntityId");
 
                     b.ToTable("courses");
                 });
@@ -113,7 +121,7 @@ namespace SchoolManagementSystem.DAL.Migrations
                         .HasColumnType("text")
                         .HasColumnName("Address");
 
-                    b.Property<DateTimeOffset>("DateOfBirth")
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("dateofbirth");
 
@@ -170,6 +178,13 @@ namespace SchoolManagementSystem.DAL.Migrations
                     b.ToTable("teachers");
                 });
 
+            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.CourseEntity", b =>
+                {
+                    b.HasOne("SchoolManagementSystem.Domain.Entities.TeacherEntity", null)
+                        .WithMany("Courses")
+                        .HasForeignKey("TeacherEntityId");
+                });
+
             modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.EnrollmentEntity", b =>
                 {
                     b.HasOne("SchoolManagementSystem.Domain.Entities.CourseEntity", "Course")
@@ -179,7 +194,7 @@ namespace SchoolManagementSystem.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("SchoolManagementSystem.Domain.Entities.StudentEntity", "Student")
-                        .WithMany()
+                        .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -187,6 +202,16 @@ namespace SchoolManagementSystem.DAL.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.StudentEntity", b =>
+                {
+                    b.Navigation("Enrollments");
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Domain.Entities.TeacherEntity", b =>
+                {
+                    b.Navigation("Courses");
                 });
 #pragma warning restore 612, 618
         }

@@ -21,8 +21,8 @@ public class TeacherEntity:IEntity
     [Column("subject")]
     public string? Subject { get; set; }
     [Column("email")]
-    public string Email { get; set; }
+    public string? Email { get; set; }
 
-    [Column("courses")]
-    public ICollection<CourseEntity>? Courses { get; set; }
+    /*[Column("courses")]
+    public ICollection<CourseEntity>? Courses { get; set; }*/
 }

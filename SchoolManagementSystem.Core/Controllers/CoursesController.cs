@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using SchoolManagementSystem.Core.Api.cqrs.Queries.CourseQueries;
 using SchoolManagementSystem.Core.Api.cqrs.Queries.StudentQueries;
 using SchoolManagementSystem.Domain.Entities;
+using SchoolManagementSystem.Portal.Shared.Mocks.Request;
 using SchoolManagementSystem.Portal.Shared.Request;
+using SchoolManagementSystem.Portal.Shared.Response;
+using SchoolManagementSystem.Portal.Shared.Result;
 using static SchoolManagementSystem.Core.Api.cqrs.Commands.CourseCommands.CourseCommands;
 using static SchoolManagementSystem.Core.Api.cqrs.Commands.StudentCommands.StudentCommands;
 
@@ -51,15 +54,15 @@ public class CoursesController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     [Route("get-courses")]
-    public async Task<ActionResult<IEnumerable<CourseEntity>>> GetCourses()
+    public async Task<ActionResult<IList<CourseEntity>>> GetCourses()
     {
         var result = await _mediator.Send(new CourseQueries.GetAllCourseQuery());
         if (result == null) return NotFound("result Not Found");
-        return Ok(result);
+        return Ok(await Result<IList<SaveCourseResponse>>.SuccessAsync(result));
     }
 
 
-  
+
 
     /// <summary>
     /// Update Student

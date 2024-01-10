@@ -1,13 +1,12 @@
 ﻿using SchoolManagementSystem.Domain.Entities;
-namespace SchoolManagementSystem.Portal.Shared.Request
+namespace SchoolManagementSystem.Portal.Shared.Mocks.Request
 {
-    public class SaveStudentRequest
+    public class StudentRequest
     {
         //public Guid StudentId { get; set; } 
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        
-        public DateTimeOffset DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public string? Email { get; set; }
         public string? Address { get; set; }
 

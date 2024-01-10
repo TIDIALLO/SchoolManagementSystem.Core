@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.DAL;
 using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
-using Microsoft.Extensions.DependencyInjection;
 using SchoolManagementSystem.Portal.Shared.Response;
 using SchoolManagementSystem.Application;
 
@@ -35,8 +33,19 @@ public static class StudentCommands
         public async Task<SaveStudentResponse> Handle(SaveStudentCommand command, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<StudentEntity>(command.Student);
-            await _unitOfWork.Students.AddAsync(entity);
-            _unitOfWork.Commit();
+
+            try
+            {
+                //entity.DateOfBirth = new DateTime(long.Parse(entity.DateOfBirth.ToString("yyyy-MM-dd")));
+
+                await _unitOfWork.Students.AddAsync(entity);
+
+                await _unitOfWork.Commit();
+            }
+            catch (Exception ex)
+            {
+                var ss = ex.Message;
+            }
             var persisted = await _unitOfWork.Students.GetByIdAsync(entity.Id);
             return _mapper.Map<SaveStudentResponse>(persisted);
            
@@ -70,10 +79,19 @@ public static class StudentCommands
             public async Task<SaveStudentResponse> Handle(UpdateStudentCommand command, CancellationToken cancellationToken)
             {
                 var entity = _mapper.Map<StudentEntity>(command.Student);
-                await _unitOfWork.Students.UpdateAsync(entity);
-                _unitOfWork.Commit();
+               
+                try
+                {
+                    await _unitOfWork.Students.UpdateAsync(entity);
+                    await _unitOfWork.Commit();
 
-                return _mapper.Map<SaveStudentResponse>(entity); ;
+                }
+                catch (Exception ex)
+                {
+                    var tt = ex.Message;
+                }
+                return _mapper.Map<SaveStudentResponse>(entity);
+
             }
         }
     }

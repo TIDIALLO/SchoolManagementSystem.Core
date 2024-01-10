@@ -7,6 +7,8 @@ using SchoolManagementSystem.Core.Api.cqrs.Queries.TeacherQueries;
 using SchoolManagementSystem.DAL;
 using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
+using SchoolManagementSystem.Portal.Shared.Response;
+using SchoolManagementSystem.Portal.Shared.Result;
 using static SchoolManagementSystem.Core.Api.cqrs.Commands.TeacherCommands.TeacherCommands;
 
 namespace SchoolManagementSystem.Core.Controllers
@@ -61,11 +63,11 @@ namespace SchoolManagementSystem.Core.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("get-teachers")]
-        public async Task<ActionResult<IEnumerable<TeacherEntity>>> GetTeachers()
+        public async Task<ActionResult<IList<TeacherEntity>>> GetTeachers()
         {
             var result = await _mediator.Send(new TeacherQueries.GetAllTeacherQuery());
             if (result == null) return NotFound("result Not Found");
-            return Ok(result);
+            return Ok(await Result<IList<SaveTeacherResponse>>.SuccessAsync(result));
         }
 
         /// <summary>

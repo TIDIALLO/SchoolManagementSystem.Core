@@ -1,15 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.DAL;
 using SchoolManagementSystem.Core.Api.Configurations;
-using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using SchoolManagementSystem.Application;
-using SchoolManagementSystem.Application.Middlewares;
 using SchoolManagementSystem.Application.Extensions;
 using Workers;
 using Hangfire;
 using Hangfire.PostgreSql;
-using ConnectLive.Core.Api.Filters;
 using HangfireBasicAuthenticationFilter;
 using SchoolManagementSystem.Proxy;
 using SchoolManagementSystem.Core.Api.Extensions;
@@ -25,7 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddBusRegistration();
+//builder.Services.AddBusRegistration();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -39,6 +36,7 @@ builder.Services.AddScoped<IProxy, Proxy>();
 //builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
 
 
+//builder.Services.AddBusRegistration(builder.Configuration);
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly, typeof(ApplicationDbContext).Assembly);
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(MappingProfile).Assembly));
@@ -49,6 +47,18 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheBehavior
 
 builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(options => options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("SchoolManagementSystemContext"))));
 //builder.Services.AddHangfireServer();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policyBuilder =>
+    {
+        var origins = builder.Configuration["Security:AllowedOrigins"].Split(";");
+        policyBuilder.WithOrigins(origins);
+        policyBuilder.AllowAnyHeader();
+        policyBuilder.AllowAnyMethod();
+        policyBuilder.AllowCredentials();
+    });
+});
 
 var app = builder.Build();
 
@@ -81,4 +91,6 @@ app.UseHangfireDashboard("/workers", new DashboardOptions
 
 });
 
-    app.Run();
+app.UseCors("CorsPolicy");
+
+app.Run();
