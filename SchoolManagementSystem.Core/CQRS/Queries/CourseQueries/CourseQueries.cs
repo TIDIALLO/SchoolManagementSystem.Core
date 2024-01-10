@@ -37,7 +37,9 @@ public static class CourseQueries
         public async Task<SaveCourseResponse> Handle(GetCourseQuery query, CancellationToken cancellationToken)
         {
             var persisted = await _dbContext.Courses.FirstOrDefaultAsync(e => e.Id == query.CourseId, cancellationToken);
+#pragma warning disable CS8603 // Existence possible d'un retour de référence null.
             return persisted == null ? null : _mapper.Map<SaveCourseResponse>(persisted);
+#pragma warning restore CS8603 // Existence possible d'un retour de référence null.
         }
     }
     #endregion
@@ -48,7 +50,9 @@ public static class CourseQueries
     #region GetAllCourses
     public class GetAllCourseQuery : IRequest<List<SaveCourseResponse>>
     {
+#pragma warning disable CS8618 // Un champ non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le champ comme nullable.
         public GetAllCourseQuery()
+#pragma warning restore CS8618 // Un champ non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le champ comme nullable.
         {
         }
         public List<SaveCourseResponse> Course { get; set; }
@@ -73,7 +77,7 @@ public static class CourseQueries
             //var position = memoryStream.Position;
 
             //var courses = await _dbContext.Courses.ToListAsync(cancellationToken);
-            var result = _unitOfWork.Courses.GetAll();
+            var result = await _unitOfWork.Courses.GetAll();
             return  _mapper.Map<List<SaveCourseResponse>>(result);
         }
     }

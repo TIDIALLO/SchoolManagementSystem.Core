@@ -4,7 +4,7 @@ namespace SchoolManagementSystem.Portal.Shared.Request;
 
 public class SaveCourseRequest
 {
-    public Guid CourseId { get; set; }
+    public Guid CourseId { get; set; }  = Guid.NewGuid();
     public string? Title { get; set; }
     public string? Description { get; set; }
     /*ublic Guid TeacherId { get; set; }

@@ -69,7 +69,7 @@ public static class TeacherCommands
             {
                 var entity = _mapper.Map<TeacherEntity>(command.Teacher);
                 await _unitOfWork.Teachers.UpdateAsync(entity);
-                _unitOfWork.Commit();
+                await _unitOfWork.Commit();
 
                 return _mapper.Map<SaveTeacherResponse>(entity); ;
             }
@@ -105,7 +105,7 @@ public static class TeacherCommands
                 {
                     var entity = await _unitOfWork.Teachers.GetByIdAsync(command.TeacherId);
                     await _unitOfWork.Teachers.RemoveAsync(entity);
-                    _unitOfWork.Commit();
+                    await _unitOfWork.Commit();
 
                     return _mapper.Map<SaveTeacherResponse>(entity);
                 }

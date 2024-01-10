@@ -56,6 +56,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - EventBusUsername=user
+      - EventBusPassword=password
+      - EventBusConnection=rabbitmq://rabbitmq:5672
     ports:
       - "8080"
       - "8081"

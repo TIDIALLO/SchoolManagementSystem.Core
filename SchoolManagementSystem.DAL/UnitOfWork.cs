@@ -11,8 +11,8 @@ public class UnitOfWork(ApplicationDbContext context, IServiceProvider servicePr
     public IGenericRepository<TeacherEntity> Teachers { get ; set ;} = serviceProvider.GetRequiredService<IGenericRepository<TeacherEntity>>();
     public IGenericRepository<EnrollmentEntity> Enrollments { get; set;} = serviceProvider.GetRequiredService<IGenericRepository<EnrollmentEntity>>();
 
-    public void Commit()
+    public async Task Commit()
     {
-        _context.SaveChanges();
+       await _context.SaveChangesAsync();
     }
 }

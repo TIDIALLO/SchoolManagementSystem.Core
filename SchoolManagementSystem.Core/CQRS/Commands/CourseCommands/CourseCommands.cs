@@ -48,9 +48,9 @@ public static class CourseCommands
     #region  UpdateCourse
     public class UpdateCourseCommand : IRequest<SaveCourseResponse>
     {
-        public UpdateCourseCommand(SaveCourseRequest Course)
+        public UpdateCourseCommand(SaveCourseRequest course)
         {
-            Course = Course;
+            Course = course;
         }
 
         public SaveCourseRequest Course { get; set; }
@@ -70,7 +70,7 @@ public static class CourseCommands
             {
                 var entity = _mapper.Map<CourseEntity>(command.Course);
                 await _unitOfWork.Courses.UpdateAsync(entity);
-                _unitOfWork.Commit();
+                await _unitOfWork.Commit();
 
                 return _mapper.Map<SaveCourseResponse>(entity); ;
             }
@@ -104,7 +104,7 @@ public static class CourseCommands
                 {
                     var entity = await _unitOfWork.Courses.GetByIdAsync(command.CourseId);
                     await _unitOfWork.Courses.RemoveAsync(entity);
-                    _unitOfWork.Commit();
+                    await _unitOfWork.Commit();
 
                     return _mapper.Map<SaveCourseResponse>(entity);
                 }

@@ -15,9 +15,9 @@ public static class TeacherQueries
     #region GetTeacher
     public class GetTeacherQuery : IRequest<SaveTeacherResponse>
     {
-        public GetTeacherQuery(Guid TeacherId)
+        public GetTeacherQuery(Guid teacherId)
         {
-            TeacherId = TeacherId;
+            TeacherId = teacherId;
         }
 
         public Guid TeacherId { get; set; }
@@ -37,7 +37,9 @@ public static class TeacherQueries
         public async Task<SaveTeacherResponse> Handle(GetTeacherQuery query, CancellationToken cancellationToken)
         {
             var persisted = await _dbContext.Teacher.FirstOrDefaultAsync(e => e.Id == query.TeacherId, cancellationToken);
+#pragma warning disable CS8603 // Existence possible d'un retour de référence null.
             return persisted == null ? null : _mapper.Map<SaveTeacherResponse>(persisted);
+#pragma warning restore CS8603 // Existence possible d'un retour de référence null.
         }
     }
     #endregion
@@ -48,7 +50,9 @@ public static class TeacherQueries
     #region GetAllTeachers
     public class GetAllTeacherQuery : IRequest<List<SaveTeacherResponse>>
     {
+#pragma warning disable CS8618 // Un champ non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le champ comme nullable.
         public GetAllTeacherQuery()
+#pragma warning restore CS8618 // Un champ non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le champ comme nullable.
         {
         }
         public List<SaveTeacherResponse> Teacher { get; set; }

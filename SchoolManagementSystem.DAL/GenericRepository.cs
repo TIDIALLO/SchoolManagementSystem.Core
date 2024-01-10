@@ -10,7 +10,9 @@ public class GenericRepository<TEntity>(ApplicationDbContext dbContext) : IGener
     public async Task<TEntity> GetByIdAsync(Guid id)
     {
         await Task.CompletedTask;
+#pragma warning disable CS8603 // Existence possible d'un retour de référence null.
         return _dbContext.Set<TEntity>().FirstOrDefault(x => x.Id == id);
+#pragma warning restore CS8603 // Existence possible d'un retour de référence null.
     }
 
     public async Task AddAsync(TEntity entity)

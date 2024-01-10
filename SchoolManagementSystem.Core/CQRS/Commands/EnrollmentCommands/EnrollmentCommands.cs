@@ -14,7 +14,11 @@ public static class EnrollmentCommands
  #region SaveEnrollment
     public class SaveEnrollmentCommand : IRequest<SaveEnrollmentResponse>
     {
+#pragma warning disable CS8618 // Un champ non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le champ comme nullable.
+#pragma warning disable CS1717 // Assignation effectuée à la même variable
         public SaveEnrollmentCommand(SaveEnrollmentRequest Enrollment) => Enrollment = Enrollment;
+#pragma warning restore CS1717 // Assignation effectuée à la même variable
+#pragma warning restore CS8618 // Un champ non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le champ comme nullable.
         public SaveEnrollmentRequest Enrollment { get; set; }
     }
 
@@ -48,9 +52,9 @@ public static class EnrollmentCommands
     #region  UpdateEnrollment
     public class UpdateEnrollmentCommand : IRequest<SaveEnrollmentResponse>
     {
-        public UpdateEnrollmentCommand(SaveEnrollmentRequest Enrollment)
+        public UpdateEnrollmentCommand(SaveEnrollmentRequest enrollment)
         {
-            Enrollment = Enrollment;
+            Enrollment = enrollment;
         }
 
         public SaveEnrollmentRequest Enrollment { get; set; }
@@ -70,7 +74,7 @@ public static class EnrollmentCommands
             {
                 var entity = _mapper.Map<EnrollmentEntity>(command.Enrollment);
                 await _unitOfWork.Enrollments.UpdateAsync(entity);
-                _unitOfWork.Commit();
+                await _unitOfWork.Commit();
 
                 return _mapper.Map<SaveEnrollmentResponse>(entity); ;
             }
@@ -107,7 +111,7 @@ public static class EnrollmentCommands
                 {
                     var entity = await _unitOfWork.Enrollments.GetByIdAsync(command.EnrollmentId);
                     await _unitOfWork.Enrollments.RemoveAsync(entity);
-                    _unitOfWork.Commit();
+                    await _unitOfWork.Commit();
 
                     return _mapper.Map<SaveEnrollmentResponse>(entity);
                 }

@@ -10,10 +10,13 @@ public static class HostExtensions
     public static WebApplicationBuilder CreateWebHostBuilder<T>(string[] args)
         where T : class
     {
+#pragma warning disable CS8600 // Conversion de littéral ayant une valeur null ou d'une éventuelle valeur null en type non-nullable.
         string appName = typeof(T).Assembly.GetName().Name;
+#pragma warning restore CS8600 // Conversion de littéral ayant une valeur null ou d'une éventuelle valeur null en type non-nullable.
 
         var builder = WebApplication.CreateBuilder(args);
         builder.Host.ConfigureAppConfiguration((host, builder) =>
+#pragma warning disable CS8604 // Existence possible d'un argument de référence null.
         {
             builder.SetBasePath(Directory.GetCurrentDirectory());
             builder.AddJsonFile("appsettings.json", optional: true);
@@ -21,6 +24,7 @@ public static class HostExtensions
             builder.AddEnvironmentVariables();
             builder.AddCommandLine(args);
         }).ConfigureLogging((host, builder) => builder.UseSerilog(host.Configuration, appName).AddSerilog());
+#pragma warning restore CS8604 // Existence possible d'un argument de référence null.
 
         return builder;
     }
@@ -61,7 +65,9 @@ public static class HostExtensions
         return services;
     }
 
+#pragma warning disable CS8625 // Impossible de convertir un littéral ayant une valeur null en type référence non-nullable.
     public static IBusControl Configure(IConfiguration configuration, Action<IRabbitMqBatchPublishConfigurator> registrationAction = null)
+#pragma warning restore CS8625 // Impossible de convertir un littéral ayant une valeur null en type référence non-nullable.
     {
         var connection = configuration["EventBusConnection"];
 

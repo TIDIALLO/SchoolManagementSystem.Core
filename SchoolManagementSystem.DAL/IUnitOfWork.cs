@@ -6,7 +6,7 @@ namespace SchoolManagementSystem.DAL;
 
 public interface IUnitOfWork 
 {
-    void Commit();
+    Task Commit();
     
     IGenericRepository<StudentEntity> Students { get; set;}
     IGenericRepository<CourseEntity> Courses { get; set; }
@@ -15,5 +15,5 @@ public interface IUnitOfWork
 }
 public interface IUnitOfWork<C>
 {
-    void Commit();
+    Task Commit();
 }

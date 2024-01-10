@@ -19,7 +19,7 @@ public static class StudentQueries
     /// GetStudent
     /// </summary>
     #region GetStudent
-    public class GetStudentQuery : IntegrationEvent, IRequest<SaveStudentResponse> , ICachable<SaveStudentResponse>
+    public class GetStudentQuery : IntegrationEvent, IRequest<SaveStudentRequest> , ICachable<SaveStudentRequest>
     {
         public GetStudentQuery(Guid studentId)
         {
@@ -35,7 +35,7 @@ public static class StudentQueries
         public int Expiration { get; set; } = 30;
     }
 
-    public class GetStudentQueryHandler : IRequestHandler<GetStudentQuery, SaveStudentResponse>
+    public class GetStudentQueryHandler : IRequestHandler<GetStudentQuery, SaveStudentRequest>
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -46,10 +46,12 @@ public static class StudentQueries
             _mapper = serviceProvider.GetRequiredService<IMapper>();
         }
 
-        public async Task<SaveStudentResponse?> Handle(GetStudentQuery query, CancellationToken cancellationToken)
+        public async Task<SaveStudentRequest> Handle(GetStudentQuery query, CancellationToken cancellationToken)
         {
             var persisted = await _dbContext.Students.FirstOrDefaultAsync(e => e.Id == query.StudentId, cancellationToken);
-            return persisted == null ? null : _mapper.Map<SaveStudentResponse>(persisted);
+#pragma warning disable CS8603 // Existence possible d'un retour de référence null.
+            return persisted == null ? null : _mapper.Map<SaveStudentRequest>(persisted);
+#pragma warning restore CS8603 // Existence possible d'un retour de référence null.
         }
     }
     #endregion
@@ -60,11 +62,15 @@ public static class StudentQueries
     #region GetAllStudents
     public class GetAllStudentQuery : IntegrationEvent, IRequest<List<SaveStudentResponse>>, ICachable<List<SaveStudentResponse>>
     {
+#pragma warning disable CS8618 // Un champ non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le champ comme nullable.
         public GetAllStudentQuery()
+#pragma warning restore CS8618 // Un champ non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le champ comme nullable.
         {
         }
 
+#pragma warning disable CS8618 // Un champ non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le champ comme nullable.
         public GetAllStudentQuery(Guid eventId) : base(eventId)
+#pragma warning restore CS8618 // Un champ non-nullable doit contenir une valeur non-null lors de la fermeture du constructeur. Envisagez de déclarer le champ comme nullable.
         {
         }
 
@@ -100,7 +106,7 @@ public static class StudentQueries
         {
             var result = await _dbContext.Students.ToListAsync(cancellationToken);
 
-            var requestCommand = new RequestCommand
+           /* var requestCommand = new RequestCommand
             {
                 Uri = $"{_configuration["NewletterUri"]}WeatherForecast/notification-count",
             };
@@ -111,8 +117,10 @@ public static class StudentQueries
             //Background Job.
             _backgroundJobClient.Enqueue(() => _emailWorker.SendEmail("Email ", "######", "Welcome to the website."));
             _backgroundJobClient.Schedule(() => _emailWorker.SendNewsletter("Newsletter", "******** Newsletter 1 *******"), TimeSpan.FromSeconds(5));
-
+*/
+#pragma warning disable CS8603 // Existence possible d'un retour de référence null.
             return result == null ? null : _mapper.Map<List<SaveStudentResponse>>(result);
+#pragma warning restore CS8603 // Existence possible d'un retour de référence null.
 
             //return _mapper.Map<List<SaveStudentResponse>>(students);
         }

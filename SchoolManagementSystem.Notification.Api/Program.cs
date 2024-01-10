@@ -1,5 +1,6 @@
 using Hangfire;
 using Hangfire.PostgreSql;
+using SchoolManagementSystem.Core.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddHangfireServer(options =>
 {
     options.Queues = ["email"];
 });
+//builder.Services.AddBusRegistration(builder.Configuration);
 
 var app = builder.Build();  
 
