@@ -9,7 +9,10 @@ using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
 using SchoolManagementSystem.Portal.Shared.Response;
 using SchoolManagementSystem.Portal.Shared.Result;
+<<<<<<< HEAD
 using static SchoolManagementSystem.Core.Api.cqrs.Commands.StudentCommands.StudentCommands;
+=======
+>>>>>>> 3f77ab6d5fbfdd89f8dc181cd2e9753a31a00a74
 using static SchoolManagementSystem.Core.Api.cqrs.Commands.TeacherCommands.TeacherCommands;
 
 namespace SchoolManagementSystem.Core.Controllers

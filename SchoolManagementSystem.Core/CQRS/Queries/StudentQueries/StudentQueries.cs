@@ -46,12 +46,19 @@ public static class StudentQueries
             _mapper = serviceProvider.GetRequiredService<IMapper>();
         }
 
+<<<<<<< HEAD
         public async Task<SaveStudentRequest> Handle(GetStudentQuery query, CancellationToken cancellationToken)
         {
             var persisted = await _dbContext.Students.FirstOrDefaultAsync(e => e.Id == query.StudentId, cancellationToken);
 #pragma warning disable CS8603 // Existence possible d'un retour de référence null.
             return persisted == null ? null : _mapper.Map<SaveStudentRequest>(persisted);
 #pragma warning restore CS8603 // Existence possible d'un retour de référence null.
+=======
+        public async Task<SaveStudentRequest?> Handle(GetStudentQuery query, CancellationToken cancellationToken)
+        {
+            var persisted = await _dbContext.Students.FirstOrDefaultAsync(e => e.Id == query.StudentId, cancellationToken);
+            return persisted == null ? null : _mapper.Map<SaveStudentRequest>(persisted);
+>>>>>>> 3f77ab6d5fbfdd89f8dc181cd2e9753a31a00a74
         }
     }
     #endregion
@@ -118,7 +125,10 @@ public static class StudentQueries
             _backgroundJobClient.Enqueue(() => _emailWorker.SendEmail("Email ", "######", "Welcome to the website."));
             _backgroundJobClient.Schedule(() => _emailWorker.SendNewsletter("Newsletter", "******** Newsletter 1 *******"), TimeSpan.FromSeconds(5));
 */
+<<<<<<< HEAD
 #pragma warning disable CS8603 // Existence possible d'un retour de référence null.
+=======
+>>>>>>> 3f77ab6d5fbfdd89f8dc181cd2e9753a31a00a74
             return result == null ? null : _mapper.Map<List<SaveStudentResponse>>(result);
 #pragma warning restore CS8603 // Existence possible d'un retour de référence null.
 
