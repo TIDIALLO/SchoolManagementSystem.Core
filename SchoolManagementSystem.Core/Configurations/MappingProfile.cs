@@ -17,7 +17,9 @@ public class MappingProfile : Profile
 
 
         CreateMap<SaveTeacherRequest, TeacherEntity>().ReverseMap();
-        CreateMap<TeacherEntity, SaveTeacherResponse>().ReverseMap();
+        CreateMap<TeacherEntity, SaveTeacherResponse>()
+            .ForMember(e => e.TeacherId, options => options.MapFrom(e => e.Id)).ReverseMap()
+            .ReverseMap();
 
         CreateMap<SaveCourseRequest, CourseEntity>().ReverseMap();
         CreateMap<CourseEntity, SaveCourseResponse>().ReverseMap();
@@ -33,5 +35,7 @@ public class MappingProfile : Profile
 
         CreateMap<SaveEnrollmentRequest, EnrollmentEntity>().ReverseMap();
         CreateMap<EnrollmentEntity, SaveEnrollmentResponse>().ReverseMap();
+
+        CreateMap<SendChatRequest, ChatResponse>().ReverseMap();
     }
 }

@@ -11,6 +11,7 @@ using HangfireBasicAuthenticationFilter;
 using SchoolManagementSystem.Proxy;
 using SchoolManagementSystem.Core.Api.Extensions;
 using SchoolManagementSystem.Core.Controllers;
+using SchoolManagementSystem.Core.Api.Hubs;
 
 //var builder = WebApplication.CreateBuilder(args);
 var builder = HostExtensions.CreateWebHostBuilder<StudentsController>(args);
@@ -47,6 +48,7 @@ builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheBehavior
 
 builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(options => options.UseNpgsqlConnection(builder.Configuration.GetConnectionString("SchoolManagementSystemContext"))));
 //builder.Services.AddHangfireServer();
+builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
 {
@@ -75,6 +77,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 app.UseCustomException();
+app.MapHub<ChatHub>("/chathub");
+
 
 
 app.MapControllers();

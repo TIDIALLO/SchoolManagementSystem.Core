@@ -13,7 +13,7 @@ public static class TeacherQueries
     /// GetTeacher
     /// </summary>
     #region GetTeacher
-    public class GetTeacherQuery : IRequest<SaveTeacherResponse>
+    public class GetTeacherQuery : IRequest<SaveTeacherRequest>
     {
         public GetTeacherQuery(Guid teacherId)
         {
@@ -23,7 +23,7 @@ public static class TeacherQueries
         public Guid TeacherId { get; set; }
     }
 
-    public class GetTeacherQueryHandler : IRequestHandler<GetTeacherQuery, SaveTeacherResponse>
+    public class GetTeacherQueryHandler : IRequestHandler<GetTeacherQuery, SaveTeacherRequest>
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
@@ -34,11 +34,11 @@ public static class TeacherQueries
             _mapper = serviceProvider.GetRequiredService<IMapper>();
         }
 
-        public async Task<SaveTeacherResponse> Handle(GetTeacherQuery query, CancellationToken cancellationToken)
+        public async Task<SaveTeacherRequest> Handle(GetTeacherQuery query, CancellationToken cancellationToken)
         {
             var persisted = await _dbContext.Teacher.FirstOrDefaultAsync(e => e.Id == query.TeacherId, cancellationToken);
 #pragma warning disable CS8603 // Existence possible d'un retour de référence null.
-            return persisted == null ? null : _mapper.Map<SaveTeacherResponse>(persisted);
+            return persisted == null ? null : _mapper.Map<SaveTeacherRequest>(persisted);
 #pragma warning restore CS8603 // Existence possible d'un retour de référence null.
         }
     }

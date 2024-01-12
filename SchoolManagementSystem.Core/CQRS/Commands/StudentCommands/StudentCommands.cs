@@ -20,7 +20,6 @@ public static class StudentCommands
 
     public sealed class SaveStudentCommandHandler : IRequestHandler<SaveStudentCommand, SaveStudentResponse>
     {
-        //private readonly ApplicationDbContext _dbContext;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 

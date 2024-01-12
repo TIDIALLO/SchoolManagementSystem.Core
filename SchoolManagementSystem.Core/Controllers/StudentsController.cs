@@ -55,7 +55,6 @@ namespace SchoolManagementSystem.Core.Controllers
             var result = await _mediator.Send(new StudentQueries.GetStudentQuery(id));
             if (result == null) return NotFound($"Student with id '{id}' cannot be found!");
             return Ok(await Result<SaveStudentRequest>.SuccessAsync(result));
-
         }
 
         /// <summary>

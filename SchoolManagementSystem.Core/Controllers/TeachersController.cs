@@ -9,6 +9,7 @@ using SchoolManagementSystem.Domain.Entities;
 using SchoolManagementSystem.Portal.Shared.Request;
 using SchoolManagementSystem.Portal.Shared.Response;
 using SchoolManagementSystem.Portal.Shared.Result;
+using static SchoolManagementSystem.Core.Api.cqrs.Commands.StudentCommands.StudentCommands;
 using static SchoolManagementSystem.Core.Api.cqrs.Commands.TeacherCommands.TeacherCommands;
 
 namespace SchoolManagementSystem.Core.Controllers
@@ -34,13 +35,11 @@ namespace SchoolManagementSystem.Core.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("save-teacher")]
-        public async Task<IActionResult> SaveTeacher(SaveTeacherRequest request)
+        public async Task<ActionResult<SaveTeacherResponse>> SaveTeacher(SaveTeacherRequest request)
         {
             var saveRequest = new SaveTeacherCommand(request);
             var result = await _mediator.Send(saveRequest);
-
-            return Ok(request);
-
+            return Ok(await Result<SaveTeacherResponse>.SuccessAsync(result));
         }
 
         /// <summary>
@@ -50,11 +49,11 @@ namespace SchoolManagementSystem.Core.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("get-teacher/{id}")]
-        public async Task<ActionResult<IEnumerable<TeacherEntity>>> GetTeacher(Guid id)
+        public async Task<ActionResult<SaveTeacherRequest>>  GetTeacherById(Guid id)
         {
             var result = await _mediator.Send(new TeacherQueries.GetTeacherQuery(id));
-            if (result == null) return NotFound($"Teaher with id '{id}' cannot be found!");
-            return Ok(result);
+            if (result == null) return NotFound($"Teacher with id '{id}' cannot be found!");
+            return Ok(await Result<SaveTeacherRequest>.SuccessAsync(result));
         }
 
         /// <summary>
@@ -78,10 +77,10 @@ namespace SchoolManagementSystem.Core.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("update-teacher/{id}")]
-        public async Task<IActionResult> TeacherStudent(Guid id, SaveTeacherRequest request)
+        public async Task<IActionResult> TeacherStudent(SaveTeacherRequest request)
         {
             var result = await _mediator.Send(new UpdateTeacherCommand(request));
-            return Ok(result);
+            return Ok(await Result<SaveTeacherResponse>.SuccessAsync(result));
         }
 
         /// <summary>
@@ -91,10 +90,11 @@ namespace SchoolManagementSystem.Core.Controllers
         /// <returns></returns>
         [HttpDelete]
         [Route("remove-teacher/{id}")]
-        public async Task<IActionResult> RemoveTeacher(Guid id)
+        public async Task<ActionResult<SaveStudentResponse>> RemoveTeacher(Guid id)
         {
             var result = await _mediator.Send(new DeleteTeacherCommand(id));
-            return Ok(result);
+            if (result == null) return NotFound("result Not Found");
+            return Ok(await Result<SaveTeacherResponse>.SuccessAsync(result));
         }
 
 
