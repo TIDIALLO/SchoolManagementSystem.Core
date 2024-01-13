@@ -17,13 +17,10 @@ public class MappingProfile : Profile
 
 
         CreateMap<SaveTeacherRequest, TeacherEntity>().ReverseMap();
-<<<<<<< HEAD
         CreateMap<TeacherEntity, SaveTeacherResponse>()
             .ForMember(e => e.TeacherId, options => options.MapFrom(e => e.Id)).ReverseMap()
             .ReverseMap();
-=======
         CreateMap<TeacherEntity, SaveTeacherResponse>().ReverseMap();
->>>>>>> 3f77ab6d5fbfdd89f8dc181cd2e9753a31a00a74
 
         CreateMap<SaveCourseRequest, CourseEntity>().ReverseMap();
         CreateMap<CourseEntity, SaveCourseResponse>().ReverseMap();

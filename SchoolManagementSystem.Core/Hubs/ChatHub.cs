@@ -12,6 +12,11 @@ public class ChatHub: Hub
     {
         await Clients.All.SendAsync("CleardMessages", username, message);
     }
+    public async Task SendMessageToCaller(string user, string message)
+    => await Clients.Caller.SendAsync("ReceiveMessage", user, message);
+
+    public async Task SendMessageToGroup(string user, string message)
+        => await Clients.Group("SignalR Users").SendAsync("ReceiveMessage", user, message);
     /*    private string ProcessMessageWithChatGPT(string message)
         {
             // Call the ChatGPT API here and return the response
